@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Tarjeta } from "@/lib/content";
 import TemaIcono from "@/components/TemaIcono";
+import PuntoIcono from "@/components/PuntoIcono";
 import OutfitThermo from "@/components/OutfitThermo";
 import SafeCrib from "@/components/SafeCrib";
 import NursingGuide from "@/components/NursingGuide";
@@ -133,8 +134,8 @@ export default function PosterClient({ tarjetas }: { tarjetas: Tarjeta[] }) {
                     key={i}
                     className="flex gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5"
                   >
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-skysoft/50 text-xl ring-1 ring-sky/30">
-                      {p.icon}
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-skysoft/50 p-1 text-xl ring-1 ring-sky/30">
+                      <PuntoIcono icon={p.icon} className="h-full w-full" />
                     </span>
                     <div>
                       <h3 className="font-display text-lg leading-tight text-cocoa">

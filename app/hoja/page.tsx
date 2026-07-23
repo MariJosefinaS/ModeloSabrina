@@ -2,6 +2,7 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import PrintButton from "@/components/PrintButton";
 import TemaIcono from "@/components/TemaIcono";
+import PuntoIcono from "@/components/PuntoIcono";
 import { tarjetas, type Tarjeta } from "@/lib/content";
 import { SITE } from "@/lib/site";
 
@@ -141,7 +142,7 @@ function Tema({
   return (
     <section className={`break-inside-avoid ${grow ? "flex flex-1 flex-col" : ""}`}>
       <div className="flex flex-col items-center">
-        <span className="grid h-[56px] w-[56px] place-items-center rounded-full bg-skysoft/70 p-[10px] ring-[3px] ring-white outline outline-1 outline-marca/20">
+        <span className="grid h-[58px] w-[58px] place-items-center rounded-full bg-sky p-[7px] ring-[3px] ring-white outline outline-1 outline-marca/25">
           <TemaIcono id={t.id} className="h-full w-full" />
         </span>
         <h3 className="mt-1.5 text-center font-display text-[13px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
@@ -160,10 +161,13 @@ function Tema({
           <li
             key={i}
             className={`flex gap-1.5 ${
-              dense ? "text-[9.8px] leading-[1.32]" : "text-[10.9px] leading-[1.36]"
+              dense ? "text-[10.2px] leading-[1.34]" : "text-[11.6px] leading-[1.4]"
             } text-[#44515F]`}
           >
-            <span className="mt-[5px] h-[5px] w-[5px] shrink-0 rotate-45 rounded-[1px] bg-sky" />
+            <PuntoIcono
+              icon={p.icon}
+              className={`mt-[0.5px] shrink-0 ${dense ? "h-[15px] w-[15px]" : "h-[16px] w-[16px]"}`}
+            />
             <span>
               <strong className="font-bold text-marca">{p.titulo}.</strong>{" "}
               {p.texto}
