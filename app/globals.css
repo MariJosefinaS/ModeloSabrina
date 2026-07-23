@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-fredoka: "Fredoka", system-ui, sans-serif;
+  --font-nunito: "Nunito", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-cream text-cocoa font-body antialiased;
+    background-image:
+      radial-gradient(60rem 60rem at 10% -10%, #BFE3FF55, transparent),
+      radial-gradient(50rem 50rem at 110% 0%, #8ECAE644, transparent),
+      radial-gradient(70rem 60rem at 50% 120%, #E4F2FF66, transparent);
+    background-attachment: fixed;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .perspective {
+    perspective: 1200px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ── Keyframes ──────────────────────────────────────────────── */
+@keyframes wave {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(16deg); }
+  20%, 40% { transform: rotate(-8deg); }
+}
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes bob-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes drift {
+  from { transform: translateX(-8vw); }
+  to { transform: translateX(108vw); }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes rise {
+  0% { opacity: 0; transform: translateY(28px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+@keyframes float-tag {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+@keyframes sheen {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Animation utilities ────────────────────────────────────── */
+.anim-wave { transform-origin: 75% 75%; animation: wave 2.6s ease-in-out infinite; }
+.anim-blink { transform-origin: center; animation: blink 4.2s ease-in-out infinite; }
+.anim-bob { animation: bob 4s ease-in-out infinite; }
+.anim-bob-slow { animation: bob-slow 6s ease-in-out infinite; }
+.anim-drift { animation: drift linear infinite; }
+.anim-twinkle { animation: twinkle 3s ease-in-out infinite; }
+.anim-pop { animation: pop-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.anim-rise { animation: rise 0.7s ease-out both; }
+.anim-wiggle { animation: wiggle 3s ease-in-out infinite; }
+.anim-float-tag { animation: float-tag 5s ease-in-out infinite; }
+
+/* Reveal on load with a stagger via inline --delay */
+.reveal { animation: rise 0.7s ease-out both; animation-delay: var(--delay, 0ms); }
+
+/* Friendly focus ring */
+.focus-cute:focus-visible {
+  outline: 3px dashed #0056A2;
+  outline-offset: 3px;
+  border-radius: 1rem;
+}
+
+/* ── Fondo animado (menos formal, más vivo) ─────────────────── */
+@keyframes float-up {
+  0%   { transform: translateY(15vh) translateX(0) scale(.85); opacity: 0; }
+  8%   { opacity: .85; }
+  50%  { transform: translateY(-45vh) translateX(6vw) scale(1); }
+  92%  { opacity: .85; }
+  100% { transform: translateY(-120vh) translateX(-4vw) scale(1); opacity: 0; }
+}
+@keyframes sway {
+  0%, 100% { transform: translateX(-12px) rotate(-8deg); }
+  50%      { transform: translateX(12px) rotate(8deg); }
+}
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(5vw, -4vh) scale(1.15); }
+  66%      { transform: translate(-4vw, 3vh) scale(.9); }
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes hue { to { filter: hue-rotate(18deg); } }
+
+.anim-float-up { animation: float-up linear infinite; }
+.anim-sway { animation: sway 4.5s ease-in-out infinite; }
+.anim-blob { animation: blob 22s ease-in-out infinite; }
+.anim-spin-slow { animation: spin-slow 26s linear infinite; }
+
+/* ── Hoja imprimible A4 (para plastificar) ─────────────────── */
+.sheet {
+  width: 210mm;
+  max-width: 100%;
+  min-height: 297mm;
+  margin-inline: auto;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Tríptico imprimible (A4 apaisado, plegado en 3) ────────── */
+.trifold {
+  width: 297mm;
+  min-height: 210mm;
+  margin-inline: auto;
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+/* Guías de plegado entre columnas */
+.trifold > .panel { position: relative; }
+.trifold > .panel:not(:last-child) {
+  border-right: 1px dashed #9DBBD6;
+}
+/* En pantalla se ve reducido para que entren las dos caras */
+@media screen {
+  .trifold-zoom { zoom: 0.6; }
+}
+
+@media print {
+  /* Ocultar todo menos las hojas */
+  body { background: #ffffff !important; }
+  .no-print { display: none !important; }
+  .sheet {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  .trifold {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  .page-break { break-after: page; }
+  @page { size: A4 landscape; margin: 6mm; }
+}
+
+/* Respeta a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

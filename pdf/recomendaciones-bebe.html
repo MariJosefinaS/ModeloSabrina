@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recomendaciones para tu bebé · Sanatorio Modelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --grape:#8367C7; --cocoa:#5a4646; --cream:#FFF9F3;
+    --peach:#FFD8BE; --lav:#E4D6F5; --mint:#CDEAC0; --sky:#8ECAE6; --sun:#FFE8A3;
+    --teal:#2E7DA1;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:"Nunito",system-ui,sans-serif; color:var(--cocoa);
+    background:var(--cream); line-height:1.5;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  h1,h2,h3{ font-family:"Fredoka",system-ui,sans-serif; margin:0; }
+  .page{ max-width:800px; margin:0 auto; padding:28px 34px; }
+
+  /* Portada */
+  .hero{
+    background:linear-gradient(135deg,#8367C7,#B79CE8);
+    color:#fff; border-radius:26px; padding:28px 30px; position:relative; overflow:hidden;
+  }
+  .hero .brand{ display:flex; align-items:center; gap:12px; }
+  .hero .brand .logo{ width:52px; height:52px; }
+  .hero h1{ font-size:34px; margin-top:14px; }
+  .hero p{ margin:6px 0 0; opacity:.95; max-width:70%; }
+  .hero .bubbles{ position:absolute; right:-10px; top:-10px; opacity:.4; }
+  .tagline{ font-size:12px; text-transform:uppercase; letter-spacing:1.5px; opacity:.9; }
+
+  .intro{ margin:18px 2px; color:#6b5757; }
+
+  section{ margin-top:22px; page-break-inside:avoid; }
+  .sec-head{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .sec-emoji{ width:46px; height:46px; border-radius:14px; display:grid; place-items:center;
+    font-size:24px; box-shadow:0 4px 10px rgba(0,0,0,.08); }
+  .sec-head h2{ font-size:23px; color:#4a3b3b; }
+  .sec-head .n{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--grape); }
+
+  .callout{ border-radius:16px; padding:12px 16px; margin:8px 0 14px; font-weight:700; }
+  .callout.peach{ background:#FFEEE1; border-left:6px solid var(--peach); }
+  .callout.lav{ background:#F1E9FB; border-left:6px solid var(--lav); }
+  .callout.mint{ background:#E7F6E1; border-left:6px solid var(--mint); }
+
+  ul.tips{ list-style:none; padding:0; margin:0; }
+  ul.tips li{ display:flex; gap:10px; padding:7px 0; border-bottom:1px dashed #eadfce; }
+  ul.tips li:last-child{ border-bottom:0; }
+  ul.tips .ic{ font-size:18px; }
+  ul.tips b{ color:#4a3b3b; }
+
+  table{ width:100%; border-collapse:collapse; margin:6px 0 4px; font-size:13px; border-radius:12px; overflow:hidden; }
+  th,td{ padding:8px 10px; text-align:left; border-bottom:1px solid #eee; }
+  thead th{ background:var(--grape); color:#fff; font-family:"Fredoka"; font-weight:600; }
+  tbody tr:nth-child(even){ background:#faf6ff; }
+
+  .cols{ display:flex; gap:14px; }
+  .col{ flex:1; border-radius:16px; padding:12px 14px; }
+  .col.good{ background:#E7F6E1; }
+  .col.bad{ background:#FCE7EC; }
+  .col h3{ font-size:15px; margin-bottom:6px; }
+  .col ul{ margin:0; padding-left:18px; }
+  .col li{ margin:4px 0; }
+
+  .fuentes{ background:#fff; border-radius:16px; padding:14px 18px; box-shadow:0 4px 12px rgba(0,0,0,.05); }
+  .fuentes ol{ margin:6px 0 0; padding-left:20px; font-size:12.5px; }
+  .fuentes li{ margin:5px 0; }
+  .fuentes a{ color:var(--teal); word-break:break-all; }
+
+  .disclaimer{ margin-top:16px; background:var(--sun); border-radius:14px; padding:12px 16px; font-size:12.5px; }
+  footer{ margin-top:18px; text-align:center; font-size:11.5px; color:#8a7a7a; }
+
+  @page{ size:A4; margin:14mm; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Portada -->
+  <div class="hero">
+    <svg class="bubbles" width="160" height="160" viewBox="0 0 160 160"><g fill="#fff"><circle cx="120" cy="30" r="26"/><circle cx="150" cy="70" r="16"/><circle cx="95" cy="55" r="12"/></g></svg>
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 44 44" aria-hidden="true"><rect x="1" y="1" width="42" height="42" rx="12" fill="#fff"/><path d="M22 10c-6 0-10 4-10 10 0 7 10 14 10 14s10-7 10-14c0-6-4-10-10-10z" fill="#8367C7"/><rect x="20" y="16" width="4" height="12" rx="1.2" fill="#fff"/><rect x="16" y="20" width="12" height="4" rx="1.2" fill="#fff"/></svg>
+      <div>
+        <div class="tagline">Sanatorio Modelo S.A.</div>
+        <div style="font-family:'Fredoka';font-size:20px;font-weight:600;">Cuidados en internación conjunta</div>
+      </div>
+    </div>
+    <h1>Recomendaciones para cuidar a tu bebé</h1>
+    <p>Guía para mamás primerizas: cómo vestirlo, abrigarlo para dormir seguro y amamantar. Información verificada, con fuentes al final.</p>
+  </div>
+
+  <p class="intro">Esta guía resume, de forma simple, las recomendaciones de organismos de pediatría y lactancia. Cada afirmación puede verificarse en las fuentes citadas. Ante cualquier duda sobre la salud del bebé, consultá con tu pediatra o consultora de lactancia.</p>
+
+  <!-- 1. VESTIR -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-emoji" style="background:#FFEEE1">🧦</div>
+      <div><div class="n">Tema 1</div><h2>Cómo vestir al bebé</h2></div>
+    </div>
+    <div class="callout peach">🌡️ Regla de oro: vestí al bebé con <u>una capa más</u> de la que usás vos para estar cómoda en el mismo ambiente.</div>
+    <ul class="tips">
+      <li><span class="ic">❄️</span><span><b>Con frío:</b> body o camiseta + pijama/enterito, y una mantita liviana para salir. Los bebés prematuros pueden necesitar una capa extra hasta ganar peso.</span></li>
+      <li><span class="ic">☀️</span><span><b>Con calor:</b> alcanza con una sola capa liviana. Abrigar de más provoca sudor, mejillas coloradas e incomodidad.</span></li>
+      <li><span class="ic">🧵</span><span><b>Telas:</b> preferí algodón, muselina o bambú: suaves, transpirables y que absorben la humedad. Evitá costuras que aprieten.</span></li>
+      <li><span class="ic">🔒</span><span><b>Ropa segura:</b> que abra por adelante, con broches en las piernas para el pañal y mangas holgadas. Sin cordones ni lazos que puedan enrollarse en el cuello.</span></li>
+      <li><span class="ic">🙅</span><span><b>No abrigar de más:</b> revisá que no esté transpirado. El exceso de calor es peor que un poquito de fresco.</span></li>
+    </ul>
+
+    <table>
+      <thead><tr><th>Temperatura del ambiente</th><th>Qué ponerle</th><th>Capas</th></tr></thead>
+      <tbody>
+        <tr><td>Menos de 16 °C · muy frío</td><td>Body + enterito + buzo abrigado + mantita para salir (gorro solo en exteriores)</td><td>3 + manta</td></tr>
+        <tr><td>16–20 °C · fresco (ideal para dormir)</td><td>Body + pijama o enterito</td><td>2</td></tr>
+        <tr><td>20–24 °C · templado</td><td>Body + enterito liviano</td><td>1–2</td></tr>
+        <tr><td>24–27 °C · cálido</td><td>Una sola capa liviana de algodón</td><td>1</td></tr>
+        <tr><td>Más de 27 °C · caluroso</td><td>Body de manga corta o solo el pañal</td><td>1 liviana</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 2. DORMIR -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-emoji" style="background:#F1E9FB">🌙</div>
+      <div><div class="n">Tema 2</div><h2>Dormir seguro y bien abrigado</h2></div>
+    </div>
+    <div class="callout lav">🌡️ La habitación ideal está entre <u>16 y 20 °C</u>. Un bebé un poco más fresco es más seguro que uno con demasiado abrigo: el sobrecalentamiento aumenta el riesgo de muerte súbita (SMSL).</div>
+    <ul class="tips">
+      <li><span class="ic">✋</span><span><b>Cómo saber si tiene frío o calor:</b> tocá el pecho o la nuca (no las manos ni los pies, que suelen estar más frescos y es normal). Si la piel está caliente o húmeda, sacá una capa.</span></li>
+      <li><span class="ic">🧢</span><span><b>Sin gorro dentro de casa:</b> los bebés regulan su temperatura por la cabeza y con gorro puertas adentro pueden sobrecalentarse.</span></li>
+      <li><span class="ic">🛌</span><span><b>Mejor saco de dormir que mantas sueltas:</b> evita que se tape la cabeza. No superpongas dos sacos ni dobles la manta (cuenta como doble).</span></li>
+    </ul>
+    <div class="cols">
+      <div class="col good"><h3>✅ Sí</h3><ul>
+        <li>Bebé boca arriba para dormir</li>
+        <li>Cuna despejada y firme</li>
+        <li>Saco de dormir del talle correcto</li>
+        <li>Cuarto entre 16 y 20 °C</li>
+      </ul></div>
+      <div class="col bad"><h3>❌ Evitar</h3><ul>
+        <li>Gorro puesto dentro de casa</li>
+        <li>Mantas sueltas sobre la cara</li>
+        <li>Peluches y almohadas en la cuna</li>
+        <li>Abrigar de más</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- 3. AMAMANTAR -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-emoji" style="background:#E7F6E1">🤱</div>
+      <div><div class="n">Tema 3</div><h2>Cómo amamantar</h2></div>
+    </div>
+    <div class="callout mint">🍼 La OMS recomienda <u>lactancia materna exclusiva hasta los 6 meses</u> y, junto con otros alimentos, hasta los 2 años o más. Si el bebé se prende bien, no debería doler.</div>
+    <ul class="tips">
+      <li><span class="ic">⏰</span><span><b>A demanda:</b> ofrecé el pecho cuando el bebé "busca" o se chupa los dedos, sin esperar a que llore. En general, al menos 8 tomas al día los primeros tiempos.</span></li>
+      <li><span class="ic">👄</span><span><b>Señales de buen agarre:</b> el mentón toca el pecho, la boca bien abierta abarca gran parte de la areola, los labios quedan hacia afuera y las mejillas se ven redondas al succionar.</span></li>
+      <li><span class="ic">🤗</span><span><b>Posiciones:</b> de cuna (clásica), rugby o "pelota de fútbol" (cómoda tras una cesárea), o recostada piel con piel. La mejor es en la que estás cómoda y el bebé queda enfrentado y pegado.</span></li>
+      <li><span class="ic">💧</span><span><b>¿Toma suficiente?</b> se lo oye y se lo ve tragar, moja pañales de forma regular y hace bien de vientre.</span></li>
+    </ul>
+  </section>
+
+  <!-- FUENTES -->
+  <section class="fuentes">
+    <h2 style="font-size:18px;color:#4a3b3b;">📚 Fuentes consultadas</h2>
+    <ol>
+      <li>HealthyChildren.org (Academia Americana de Pediatría) — Cómo vestir a su bebé recién nacido. <a href="https://www.healthychildren.org/Spanish/ages-stages/baby/diapers-clothing/Paginas/dressing-your-newborn.aspx">Enlace</a></li>
+      <li>The Lullaby Trust — Dress your baby for sleep / Room temperature. <a href="https://www.lullabytrust.org.uk/baby-safety/baby-product-information/dress-your-baby-for-sleep/">Enlace</a></li>
+      <li>Asociación Española de Pediatría (AEP) — Técnicas de lactancia materna. <a href="https://lactanciamaterna.aeped.es/tecnicas-de-lactancia-materna/">Enlace</a></li>
+      <li>Organización Mundial de la Salud (OMS) — Lactancia materna. <a href="https://www.who.int/es/health-topics/breastfeeding">Enlace</a></li>
+      <li>CDC — Newborn Breastfeeding Basics. <a href="https://www.cdc.gov/infant-toddler-nutrition/breastfeeding/newborn-basics.html">Enlace</a></li>
+      <li>NHS — Breastfeeding: positioning and attachment. <a href="https://www.nhs.uk/baby/breastfeeding-and-bottle-feeding/breastfeeding/positioning-and-attachment/">Enlace</a></li>
+    </ol>
+  </section>
+
+  <div class="disclaimer">⚠️ Esta guía es orientativa y de divulgación. No reemplaza el consejo de tu pediatra o consultora de lactancia. Ante cualquier duda sobre la salud del bebé, consultá con un profesional.</div>
+
+  <footer>
+    Cuidados en internación conjunta · Sanatorio Modelo S.A. — 25 de Mayo 559, San Miguel de Tucumán · Tel. +54 381 497-9500 · sanatoriomodelosa.com.ar
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+function loadScript_form(url){
+
+  if (document.getElementById('wcform_script') == null) {
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+      script.id = "wcform_script";
+
+    if (script.readyState){   /*IE*/
+      script.onreadystatechange = function(){
+          if (script.readyState == "loaded" ||
+                  script.readyState == "complete"){
+              script.onreadystatechange = null;
+                  init_form();
+                  window.dispatchEvent(new Event('wcxReady'));
+          }
+      };
+  } else {  
+      script.onload = function(){
+        init_form();
+        window.dispatchEvent(new Event('wcxReady'));
+      };
+  }
+
+  script.src = url;
+  document.getElementsByTagName("head")[0].appendChild(script);
+  }
+}
+
+
+function init_form(){
+  if (typeof (wcbox) !== 'undefined') {
+      wcbox.init({ 
+          
+        assetHost: "https://wcentrix.net",
+        accountID: "Sa6036",
+        wcboxID: "efffe7fd70bd4b5085c580ab0edd4034",
+        tabTooltip: "Reclamos y Sugerencias",
+        tabImageURL: "Reclamos y Sugerencias",
+        tabColor: "#0020ff",
+        language: "es",
+        allowedDomains: '[]',
+      tabPosition: "right"
+      });
+  } 
+}
+
+loadScript_form("https://f.wcentrix.com/tabhelp/external/wcbox-dist/wcbox.v4.js");
+var fileref=document.createElement("link");
+fileref.setAttribute("rel", "stylesheet");
+fileref.setAttribute("type", "text/css");
+fileref.setAttribute("href", "https://f.wcentrix.com/tabhelp/external/wcbox-dist/wcbox.v4.css");
+document.getElementsByTagName("head")[0].appendChild(fileref);

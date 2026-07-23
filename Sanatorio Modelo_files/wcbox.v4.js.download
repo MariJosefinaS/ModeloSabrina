@@ -1,0 +1,456 @@
+/* eslint-disable */
+(function(window) {
+  // wcentrix Feedback Tab version 2.6
+  // Most of the assets are from version 2.1. There is a slight difference
+  // in the markup inside the feedback tab and some changes to the CSS for
+  // that markup.
+  // v.26: Reverts 2.5 and adds structure for future language support.
+  const document = window.document;
+
+  let urlWithScheme = /^([a-zA-Z]+:)?\/\//;
+
+  const settings = {
+    url: null, // required
+    wcboxID: null, // required
+    tabColor: '#000000',
+
+    // the remaining settings are optional and listed here so users of the library know what they can configure:
+    assetHost: '',
+    tabTooltip: 'support', // tooltip text (appears when hovering over tab)
+    tabImageURL: null, // optional; overrides URL generated from tabID
+    tabPosition: 'left', // or 'Right'
+    hide_tab: false, // if true, don't display the tab after initialization
+    request_subject: null, // pre-populate the ticket submission form subject
+    request_description: null, //  "     "      "     "      "        "   description
+    requester_name: null, //  "     "      "     "      "        "   user name
+    requester_email: null, //  "     "      "     "      "        "   user email
+
+    // wc params
+    accountID: null,
+    selectArea: null,
+    codeArea: null,
+    chatActive: null,
+    faqActive: null,
+    faqCustomUrl: null,
+    bottomActive: null
+  };
+
+  // references to elements on the page:
+
+  let tab;
+
+  let mobiletab;
+
+  let overlay;
+
+  let container;
+
+  let closeButton;
+
+  let iframe;
+
+  let scrim;
+  let keepopen;
+
+  function attempt(fn) {
+    try {
+      return fn();
+    } catch (e) {
+      if (window.console && window.console.log && window.console.log.apply) {
+        window.console.log('wcbox Error: ', e);
+      }
+    }
+  }
+
+  function bindEvent(element, eventName, callback) {
+    if (element && element.addEventListener) {
+      element.addEventListener(eventName, callback, false);
+    } else if (element && element.attachEvent) {
+      element.attachEvent(`on${eventName}`, callback);
+    }
+  }
+
+  function prependSchemeIfNecessary(url) {
+    if (url && !urlWithScheme.test(url)) {
+      return `${document.location.protocol}//${url}`;
+    }
+    return url;
+  }
+
+  // must be called after the DOM is loaded
+  function createElements() {
+    tab = document.createElement('div');
+    tab.setAttribute('id', 'wcbox_tab');
+    tab.setAttribute('href', '#');
+    tab.style.display = 'none';
+    tab.style.visibility = 'hidden';
+    document.body.appendChild(tab);
+
+    mobiletab = document.createElement('div');
+    mobiletab.setAttribute('id', 'wcbox_mobiletab');
+    mobiletab.setAttribute('href', '#');
+    document.body.appendChild(mobiletab);
+
+    overlay = document.createElement('div');
+    overlay.setAttribute('id', 'wcbox_overlay');
+    overlay.style.display = 'none';
+    overlay.innerHTML =
+      '<div id="wcbox_container">' +
+      '  <div class="wcbox_header"><img id="wcbox_close" /></div>' +
+      '  <iframe id="wcbox_body" frameborder="0" scrolling="yes" allowTransparency="true" style="max-height: 872px;"></iframe>' +
+      '</div>' +
+      '<div id="wcbox_scrim">&nbsp;</div>';
+    document.body.appendChild(overlay);
+    keepopen = document.createElement('script');
+    keepopen.innerHTML =
+      'xclose = true;' +
+      'var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";' +
+      'var eventer = window[eventMethod];' +
+      'var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";' +
+      'eventer(messageEvent, function (e) {' +
+      'eval(e.data);' +
+      '}, false);';
+    document.body.appendChild(keepopen);
+
+    container = document.getElementById('wcbox_container');
+    closeButton = document.getElementById('wcbox_close');
+    iframe = document.getElementById('wcbox_body');
+    scrim = document.getElementById('wcbox_scrim');
+
+    bindEvent(tab, 'click', () => {
+      window.wcbox.show();
+    });
+    bindEvent(mobiletab, 'click', () => {
+      openNewForm();
+    });
+    bindEvent(closeButton, 'click', () => {
+      window.wcbox.hide();
+    });
+    bindEvent(scrim, 'click', () => {
+      window.wcbox.hide();
+    });
+  }
+
+  function configure(options) {
+    let prop;
+    for (prop in options) {
+      if (options.hasOwnProperty(prop)) {
+        if (prop === 'url' || prop === 'assetHost') {
+          settings[prop] = prependSchemeIfNecessary(options[prop]);
+        } else {
+          settings[prop] = options[prop];
+        }
+      }
+    }
+  }
+
+  function updateTabImage() {
+    tab.innerHTML = `<span id="wc_tabtextT">${
+      settings.tabImageURL
+    } <span class="wc-ico-tab-envelop wcaniBackd"></span></span>`;
+    mobiletab.innerHTML = '<span id="wc_tabtextT"></span>';
+  }
+
+  function updateTab() {
+    if (settings.hide_tab) {
+      tab.style.display = 'none';
+      tab.style.visibility = 'hidden';
+      mobiletab.style.display = 'none';
+      mobiletab.style.visibility = 'hidden';
+    } else {
+      updateTabImage();
+      tab.setAttribute('title', settings.tabTooltip);
+      tab.setAttribute('class', `wcboxTab${settings.tabPosition}`);
+      tab.style.backgroundColor = settings.tabColor;
+      tab.style.borderColor = settings.tabColor;
+      tab.style.display = 'block';
+      tab.style.visibility = 'visible';
+      tab.setAttribute(
+        'class',
+        `wcboxTab${settings.tabPosition} wcanimated wcfadeIn`
+      );
+      iframe.style.borderColor = settings.tabColor;
+
+      mobiletab.setAttribute('title', settings.tabTooltip);
+      mobiletab.setAttribute('class', `wcboxTab${settings.tabPosition}`);
+      mobiletab.style.backgroundColor = settings.tabColor;
+      mobiletab.style.borderColor = settings.tabColor;
+      mobiletab.setAttribute(
+        'class',
+        `wcboxTab${settings.tabPosition} wcanimated wcfadeIn`
+      );
+      iframe.style.borderColor = settings.tabColor;
+      if (typeof wcchat === 'undefined') {
+        mobiletab.style.display = 'block';
+        mobiletab.style.visibility = 'visible';
+      } else {
+        mobiletab.style.display = 'none';
+        mobiletab.style.visibility = 'hidden';
+      }
+    }
+  }
+
+  function cancelEvent(e) {
+    const event = e || window.event || {};
+    event.cancelBubble = true;
+    event.returnValue = false;
+    event.stopPropagation && event.stopPropagation();
+    event.preventDefault && event.preventDefault();
+    return false;
+  }
+
+  function getDocHeight() {
+    return Math.max(
+      Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      ),
+      Math.max(
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight
+      ),
+      Math.max(
+        document.body.clientHeight,
+        document.documentElement.clientHeight
+      )
+    );
+  }
+
+  function getScrollOffsets() {
+    return {
+      left:
+        window.pageXOffset ||
+        document.documentElement.scrollLeft ||
+        document.body.scrollLeft,
+      top:
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop
+    };
+  }
+
+  function closeButtonURL() {
+    // return settings.assetHost + '/external/wcbox/images/controls.png';
+    return 'https://f.wcentrix.com/tabhelp/external/wcbox/images/controls.png';
+  }
+
+  // get the URL for the "loading" page to be used as iframe src while
+  // loading the Dropbox.
+  function loadingURL() {
+    // return 'https://f.wcentrix.com/tabhelp/external/wcbox/loading.html';
+    return 'https://f.wcentrix.com/tabhelp/external/wcbox-dist/loader.html';
+  }
+
+  function dropboxURL() {
+    /* var url = settings.url + "/account/dropboxes/" + settings.dropboxID + '?x=1';
+    if (settings.request_subject)     { url += '&subject='      + settings.request_subject; }
+    if (settings.request_description) { url += '&description='  + settings.request_description; }
+    if (settings.requester_name)      { url += '&name='         + settings.requester_name; }
+    if (settings.requester_email)     { url += '&email='        + settings.requester_email; }
+    return url; */
+    let url = `${settings.assetHost}/app/form_web.html?`;
+    url += `accountID=${settings.accountID}`;
+    url += `&wcboxID=${settings.wcboxID}`;
+    // url += '&codeArea=' + settings.codeArea;
+    // url += '&chatActive=' + settings.chatActive;
+    // url += '&faqActive=' + settings.faqActive;
+    // url += '&faqCustomUrl=' + settings.faqCustomUrl;
+    // url += '&bottomActive=' + settings.bottomActive;
+    return url;
+  }
+
+  function initialize(options) {
+    if (!tab) {
+      createElements();
+    }
+    configure(options);
+    updateTab();
+    closeButton.src = closeButtonURL();
+    iframe.src = loadingURL();
+
+    window.addEventListener(
+      'message',
+      e => {
+        if (e.data === 'hidewcbox') {
+          hide();
+        }
+      },
+      false
+    );
+  }
+
+  function show(evt) {
+    iframe.src = dropboxURL();
+    overlay.style.height = scrim.style.height = `${getDocHeight()}px`;
+    container.style.top = `${getScrollOffsets().top + 50}px`;
+    overlay.style.display = 'block';
+    overlay.style.visibility = 'visible';
+    addEvent('WebCentrix', 'Form Clicked', 'Open Contact Form');
+
+    return cancelEvent(evt);
+  }
+
+  let externalForm = null;
+  function openNewForm() {
+    const box = wcbox.settings();
+
+    // let url = 'https://wcentrix.net/app/form_web.html?';
+    let url = `${settings.assetHost}/app/form_web.html?`;
+    url = url.replace('tabhelp', '');
+    url += `accountID=${box.code}`;
+    url += `&wcboxID=${box.box}`;
+
+    if (externalForm == null || externalForm.closed) {
+      externalForm = window.open(
+        url,
+        box.box,
+        'width=375, height=450, location=no'
+      );
+    } else {
+      externalForm.focus();
+    }
+
+    return cancelEvent();
+  }
+
+  // new function to show tk directly
+  function showStep(FormToShow, Subject) {
+    iframe.src = `${dropboxURL()}&FormToShow=${FormToShow}&Subject=${Subject}`;
+    overlay.style.height = scrim.style.height = `${getDocHeight()}px`;
+    container.style.top = `${getScrollOffsets().top + 50}px`;
+    overlay.style.display = 'block';
+    // return cancelEvent(evt);
+  }
+
+  function hide(evt) {
+    overlay.style.display = 'none';
+    iframe.src = loadingURL();
+    addEvent('WebCentrix', 'Form Closed', 'Close Contact Form');
+
+    return cancelEvent(evt);
+  }
+
+  function readCustomCookies() {
+    const cookieValues = getCookie('wc-fields');
+    if (cookieValues.length > 0)
+      iframe.contentWindow.postMessage(`checkCookies(${cookieValues});`, '*');
+  }
+  function getCookie(cname) {
+    const name = `${cname}=`;
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      const c = ca[i].trim();
+      if (c.indexOf(name) == 0)
+        return decodeURIComponent(c.substring(name.length, c.length));
+    }
+    return '';
+  }
+  function resizeForm(x) {
+    /* if (x.indexOf('x') !== -1) {
+        var hh = parseInt(x.split('_').pop());
+        iframe.style.height = h + 'px';
+    } else {
+    var h = iframe.clientHeight + x;
+    iframe.style.height = h + 'px';
+    } */
+    iframe.style.height = `${x + 130}px`;
+  }
+  function addEvent(category, event, label, value) {
+    try {
+      ga(() => {
+        const trackers = ga.getAll();
+        for (let i = 0; i < trackers.length; ++i) {
+          const tracker = trackers[i];
+          tracker.send('event', category, event, label, value);
+        }
+      });
+    } catch (e) {}
+    try {
+      _gaq.push(['_trackEvent', category, event, label, value]);
+    } catch (e) {}
+  }
+  var wcbox = {
+    settings() {
+      return {
+        code: settings.accountID,
+        box: settings.wcboxID
+      };
+    },
+    /*
+        PUBLIC API
+ 
+        Methods in the public API can be used as callbacks or as direct calls. As such,
+        they will always reference "wcbox" instead of "this." Each one is wrapped
+        in a try/catch block to ensure that including wcbox doesn't break the page.
+    */
+
+    /*
+     *  Build and render the wcbox tab and build the frame for the wcbox overlay,
+     *  but do not display it.
+     *  @see settings for options
+     *  @param {Object} options
+     */
+    addEvent(category, event, label, value) {
+      attempt(() => addEvent(category, event, label, value));
+    },
+    resize(options) {
+      attempt(() => resizeForm(options));
+    },
+    init(options) {
+      attempt(() => initialize(options));
+    },
+
+    /*
+     * Alias for #init.
+     */
+    update(options) {
+      attempt(() => initialize(options));
+    },
+    /*
+     *  WebCentrix_OpenHC the wcbox. Alias for #show.
+     *  @see #show
+     */
+    openHelpCenter(FormToShow, Subject) {
+      attempt(() => showStep(FormToShow, Subject)); // contact_form o chat
+    },
+
+    /*
+     *  Render the wcbox. Alias for #show.
+     *  @see #show
+     */
+    render(evt) {
+      attempt(() => show(evt));
+    },
+
+    /*
+     *  Show the wcbox. Aliased as #render.
+     *  @params {Event} event the DOM event that caused the show; optional
+     *  @return {false} false always, in case users want to bind it to an
+     *                  onclick or other event and want to prevent default behavior.
+     */
+    show(evt) {
+      attempt(() => show(evt));
+    },
+    readCustomCookies(evt) {
+      attempt(() => readCustomCookies(evt));
+    },
+
+    /*
+     *  Hide the wcbox.
+     *  @params {Event} event the DOM event that caused the show; optional
+     *  @return {false} false always, in case users want to bind it to an
+     *                  onclick or other event and want to prevent default behavior.
+     */
+    hide(evt) {
+      attempt(() => hide(evt));
+    }
+  };
+
+  bindEvent(window, 'load', () => {
+    if (window.wcbox_params) {
+      wcbox.init(window.wcbox_params);
+    }
+  });
+
+  window.wcbox = wcbox;
+})(window);

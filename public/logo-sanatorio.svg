@@ -1,0 +1,7 @@
+<!-- PLACEHOLDER: reemplazar por el logo oficial del Sanatorio Modelo S.A. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" role="img" aria-label="Sanatorio Modelo">
+  <rect x="1" y="1" width="42" height="42" rx="12" fill="#2E7DA1"/>
+  <path d="M22 10c-6 0-10 4-10 10 0 7 10 14 10 14s10-7 10-14c0-6-4-10-10-10z" fill="#EAF6FB"/>
+  <rect x="20" y="16" width="4" height="12" rx="1.2" fill="#2E7DA1"/>
+  <rect x="16" y="20" width="12" height="4" rx="1.2" fill="#2E7DA1"/>
+</svg>
