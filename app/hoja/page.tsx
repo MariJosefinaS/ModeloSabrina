@@ -17,6 +17,38 @@ const byId = Object.fromEntries(tarjetas.map((t) => [t.id, t])) as Record<
 
 const AZUL = "#0056A2";
 
+// ── Ambientación: formas orgánicas y hojitas de fondo, como en la
+//    infografía del sanatorio. Van detrás del contenido, muy tenues.
+function Fondo({ variante = 0 }: { variante?: number }) {
+  const blobs = [
+    "M-30 -20c70-30 150 10 160 70s-60 70-120 50-110-90-40-120z",
+    "M-40 40c60-50 140-20 150 40s-70 60-130 40S-100 90-40 40z",
+    "M-20 -30c80-20 140 30 130 80s-80 60-140 30-70-90 10-110z",
+  ];
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* mancha superior */}
+      <svg viewBox="0 0 200 160" className="absolute -left-10 -top-8 h-[62mm] w-[62mm]">
+        <path d={blobs[variante % 3]} fill="#EAF5FF" />
+      </svg>
+      {/* mancha inferior */}
+      <svg viewBox="0 0 200 160" className="absolute -bottom-10 -right-12 h-[70mm] w-[70mm] rotate-180">
+        <path d={blobs[(variante + 1) % 3]} fill="#F2F9FF" />
+      </svg>
+      {/* ramita de hojas, como el borde de la infografía */}
+      <svg viewBox="0 0 60 120" className="absolute -right-2 top-1/3 h-[38mm] w-[19mm] opacity-60">
+        <path d="M30 4v112" stroke="#CDE7FA" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+        {[14, 34, 54, 74, 94].map((y) => (
+          <g key={y}>
+            <path d={`M30 ${y}c-16-4-22 6-20 14 10 4 20-4 20-14z`} fill="#DCEEFF" />
+            <path d={`M30 ${y + 10}c16-4 22 6 20 14-10 4-20-4-20-14z`} fill="#EAF5FF" />
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
 // ── Íconos de línea para el bloque de contacto ─────────────────
 function IconoLinea({ name, className }: { name: string; className?: string }) {
   const p: Record<string, React.ReactNode> = {
@@ -134,15 +166,23 @@ function Tema({
   t,
   dense = false,
   grow = false,
+  tinte = 0,
 }: {
   t: Tarjeta;
   dense?: boolean;
   grow?: boolean;
+  tinte?: number;
 }) {
+  // Tarjeta suave por tema (como el póster de ejemplo), en tintes celestes
+  const TINTES = ["bg-white/80", "bg-[#EAF5FF]/85", "bg-[#F4FAFF]/90"];
   return (
-    <section className={`break-inside-avoid ${grow ? "flex flex-1 flex-col" : ""}`}>
+    <section
+      className={`break-inside-avoid relative rounded-[14px] ${TINTES[tinte % 3]} px-[3mm] pb-[2mm] pt-[1mm] ring-1 ring-sky/45 ${
+        grow ? "flex flex-1 flex-col" : ""
+      }`}
+    >
       <div className="flex flex-col items-center">
-        <span className="grid h-[58px] w-[58px] place-items-center rounded-full bg-sky p-[7px] ring-[3px] ring-white outline outline-1 outline-marca/25">
+        <span className="grid h-[50px] w-[50px] place-items-center rounded-full bg-sky p-[6px] ring-[3px] ring-white outline outline-1 outline-marca/25">
           <TemaIcono id={t.id} className="h-full w-full" />
         </span>
         <h3 className="mt-1.5 text-center font-display text-[13px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
@@ -213,29 +253,15 @@ export default async function HojaPage() {
       </p>
       <div className="trifold trifold-zoom page-break rounded-2xl shadow-soft">
         {/* SOLAPA (izquierda, se pliega hacia adentro): cuándo consultar */}
-        <div className="panel flex flex-col bg-[#F4FAFF] p-[7mm]">
-          <div className="rounded-xl bg-marca px-3 py-2 text-center">
+        <div className="panel flex flex-col bg-[#F7FBFF] p-[5mm]">
+          <Fondo variante={2} />
+          <div className="relative rounded-xl bg-marca px-3 py-2 text-center">
             <p className="font-display text-[14px] font-bold uppercase leading-tight tracking-[0.04em] text-white">
               Cuándo consultar
             </p>
-            <p className="mt-[2px] text-[9px] leading-tight text-white/85">
-              Avisá al personal de enfermería si ves alguna de estas señales
-            </p>
           </div>
-          <div className="mt-3 flex flex-1 flex-col">
-            <Tema t={byId["alarma"]} grow />
-            <div className="grid gap-2 pt-3">
-              <div className="rounded-2xl bg-white p-2.5 ring-1 ring-marca/15">
-                <p className="text-center text-[10px] leading-snug text-[#44515F]">
-                  <strong className="text-marca">Urgencias.</strong> Durante la
-                  internación, llamá al personal de enfermería. Ya en casa,
-                  comunicate con el sanatorio o acercate a la guardia.
-                </p>
-              </div>
-              <p className="rounded-xl bg-skysoft/60 px-2 py-2 text-center font-display text-[11px] font-bold leading-snug text-marca ring-1 ring-sky/60">
-                Ante la duda, siempre consultá. Más vale una consulta de más. 💙
-              </p>
-            </div>
+          <div className="mt-2 flex flex-1 flex-col">
+            <Tema t={byId["alarma"]} grow tinte={0} />
           </div>
         </div>
 
@@ -401,7 +427,7 @@ export default async function HojaPage() {
             <img
               src="/tapa-mama-bebe.jpg"
               alt="Mamá sosteniendo a su bebé"
-              className="h-[215px] w-full rounded-2xl object-cover object-top shadow-lg ring-4 ring-white/70"
+              className="h-[300px] w-full rounded-2xl object-cover object-top shadow-lg ring-4 ring-white/70"
             />
           </div>
 
@@ -413,14 +439,6 @@ export default async function HojaPage() {
               Guía práctica · {SITE.programa}
             </p>
             <div className="mx-auto my-2.5 h-px w-16 bg-white/40" />
-          </div>
-
-          <div className="relative rounded-2xl bg-white/12 p-3 text-center ring-1 ring-white/25">
-            <p className="text-[10.2px] leading-snug text-white/95">
-              Estos días son hermosos y llenos de preguntas. Reunimos acá los
-              cuidados esenciales para acompañarte mientras estás con tu bebé, y
-              las señales para consultar sin demora.
-            </p>
           </div>
 
           <div className="relative mt-auto flex items-center justify-center gap-2 pt-3 text-[9.5px] font-semibold text-white/85">
@@ -436,22 +454,25 @@ export default async function HojaPage() {
       </p>
       <div className="trifold trifold-zoom rounded-2xl shadow-soft">
         {/* Columna 1 */}
-        <div className="panel flex flex-col justify-between gap-3 p-[7mm]">
-          <Tema t={byId["alimentacion"]} />
-          <Tema t={byId["vinculo"]} />
-          <Tema t={byId["eliminacion"]} />
+        <div className="panel flex flex-col justify-between gap-[2mm] p-[4.5mm]">
+          <Fondo variante={0} />
+          <Tema t={byId["alimentacion"]} tinte={0} />
+          <Tema t={byId["vinculo"]} tinte={1} />
+          <Tema t={byId["eliminacion"]} tinte={2} />
         </div>
         {/* Columna 2 */}
-        <div className="panel flex flex-col justify-between gap-3 bg-[#F4FAFF] p-[7mm]">
-          <Tema t={byId["acompanar-mama"]} />
-          <Tema t={byId["vestimenta"]} />
-          <Tema t={byId["bano-cordon"]} />
+        <div className="panel flex flex-col justify-between gap-[2.5mm] bg-[#F7FBFF] p-[5mm]">
+          <Fondo variante={1} />
+          <Tema t={byId["acompanar-mama"]} tinte={1} />
+          <Tema t={byId["vestimenta"]} tinte={2} />
+          <Tema t={byId["bano-cordon"]} tinte={0} />
         </div>
         {/* Columna 3 */}
-        <div className="panel flex flex-col justify-between gap-3 p-[7mm]">
-          <Tema t={byId["llanto"]} />
-          <Tema t={byId["sueno"]} />
-          <Tema t={byId["control"]} />
+        <div className="panel flex flex-col justify-between gap-[2mm] p-[4.5mm]">
+          <Fondo variante={2} />
+          <Tema t={byId["llanto"]} tinte={2} />
+          <Tema t={byId["sueno"]} tinte={0} />
+          <Tema t={byId["control"]} tinte={1} />
         </div>
       </div>
     </div>

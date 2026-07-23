@@ -94,6 +94,11 @@
 .anim-rise { animation: rise 0.7s ease-out both; }
 .anim-wiggle { animation: wiggle 3s ease-in-out infinite; }
 .anim-float-tag { animation: float-tag 5s ease-in-out infinite; }
+.anim-pulse-dot { transform-origin: center; animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 0.16; }
+  50% { transform: scale(1.35); opacity: 0.06; }
+}
 
 /* Reveal on load with a stagger via inline --delay */
 .reveal { animation: rise 0.7s ease-out both; animation-delay: var(--delay, 0ms); }

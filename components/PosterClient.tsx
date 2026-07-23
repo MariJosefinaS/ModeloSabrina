@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import type { Tarjeta } from "@/lib/content";
 import TemaIcono from "@/components/TemaIcono";
 import PuntoIcono from "@/components/PuntoIcono";
-import OutfitThermo from "@/components/OutfitThermo";
-import SafeCrib from "@/components/SafeCrib";
-import NursingGuide from "@/components/NursingGuide";
-import DiaperChange from "@/components/DiaperChange";
+import EscenaInteractiva from "@/components/EscenaInteractiva";
 
 // Tintes azul/celeste por tarjeta (paleta institucional). Clases literales
 // para que Tailwind las tome. Cada tarjeta tiene una variante suave distinta.
@@ -21,10 +18,10 @@ const COLORS: Record<Tarjeta["color"], { grad: string; ring: string }> = {
 };
 
 const INTERACTIVOS: Record<string, () => React.ReactNode> = {
-  nursing: () => <NursingGuide />,
-  crib: () => <SafeCrib />,
-  outfit: () => <OutfitThermo />,
-  diaper: () => <DiaperChange />,
+  nursing: () => <EscenaInteractiva id="nursing" />,
+  crib: () => <EscenaInteractiva id="crib" />,
+  outfit: () => <EscenaInteractiva id="outfit" />,
+  diaper: () => <EscenaInteractiva id="diaper" />,
 };
 
 export default function PosterClient({ tarjetas }: { tarjetas: Tarjeta[] }) {
@@ -147,11 +144,6 @@ export default function PosterClient({ tarjetas }: { tarjetas: Tarjeta[] }) {
                 ))}
               </ul>
 
-              {abierta.destacada && (
-                <p className="mt-4 rounded-2xl bg-skysoft/50 p-3 text-center text-sm font-semibold text-marca ring-1 ring-sky">
-                  Ante la duda, siempre consultá. Más vale una consulta de más. 💙
-                </p>
-              )}
             </div>
           </div>
         </div>
