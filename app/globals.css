@@ -144,7 +144,7 @@
 /* ── Tríptico imprimible (A4 apaisado, plegado en 3) ────────── */
 .trifold {
   width: 297mm;
-  min-height: 210mm;
+  height: 210mm;
   margin-inline: auto;
   background: #ffffff;
   display: grid;
@@ -152,8 +152,8 @@
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
-/* Guías de plegado entre columnas */
-.trifold > .panel { position: relative; }
+/* Guías de plegado entre columnas (tenues: se imprimen, ayudan a plegar) */
+.trifold > .panel { position: relative; overflow: hidden; }
 .trifold > .panel:not(:last-child) {
   border-right: 1px dashed #9DBBD6;
 }
@@ -173,15 +173,17 @@
     box-shadow: none !important;
     border-radius: 0 !important;
   }
+  /* Tamaño real: los pliegues caen exactamente en los tercios de la hoja */
   .trifold {
-    width: auto;
-    min-height: auto;
+    width: 297mm;
+    height: 210mm;
     margin: 0;
     box-shadow: none !important;
     border-radius: 0 !important;
   }
+  .trifold > .panel:not(:last-child) { border-right-color: #DCE9F5; }
   .page-break { break-after: page; }
-  @page { size: A4 landscape; margin: 6mm; }
+  @page { size: A4 landscape; margin: 0; }
 }
 
 /* Respeta a quien prefiere menos movimiento */

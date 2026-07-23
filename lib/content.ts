@@ -47,7 +47,7 @@ export const tarjetas: Tarjeta[] = [
       {
         icon: "👄",
         titulo: "Buen agarre",
-        texto: "Boca bien abierta, abarcando la mayor parte de la areola y el pezón. Cuando lo suelte, ofrecé el otro pecho.",
+        texto: "Boca bien abierta, abarcando la mayor parte de la areola y el pezón. Cuando lo suelte, ofrecé el otro pecho. No suspendas la lactancia, salvo indicación médica.",
       },
       {
         icon: "🌟",
