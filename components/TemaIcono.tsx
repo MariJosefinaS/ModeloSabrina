@@ -7,12 +7,45 @@
 
 const O = "#0B3F70"; // contorno azul oscuro
 const A = "#0056A2"; // azul institucional
-const C = "#BFE3FF"; // celeste claro
-const L = "#EAF5FF"; // celeste muy claro
-const W = "#FFFFFF";
-const S = "#F7CDA9"; // piel
-const H = "#123A5A"; // pelo
-const R = "#F58BA4"; // coral (corazón / termómetro)
+// Los rellenos son DEGRADÉS (no colores planos): le dan el volumen suave
+// de la infografía del sanatorio. Se definen una vez en <Degrades/>.
+const C = "url(#tiCel)"; // celeste con volumen
+const L = "url(#tiClaro)"; // celeste muy claro
+const W = "url(#tiBlanco)";
+const S = "url(#tiPiel)"; // piel
+const H = "url(#tiPelo)"; // pelo
+const R = "url(#tiCoral)"; // coral (corazón / termómetro)
+
+function Degrades() {
+  return (
+    <defs>
+      <linearGradient id="tiCel" x1="0" y1="0" x2="0.4" y2="1">
+        <stop offset="0%" stopColor="#DCEEFF" />
+        <stop offset="100%" stopColor="#8CC5EC" />
+      </linearGradient>
+      <linearGradient id="tiClaro" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="100%" stopColor="#D2E9FB" />
+      </linearGradient>
+      <linearGradient id="tiBlanco" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="100%" stopColor="#E8F4FE" />
+      </linearGradient>
+      <linearGradient id="tiPiel" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor="#FDE7D4" />
+        <stop offset="100%" stopColor="#EFBB93" />
+      </linearGradient>
+      <linearGradient id="tiPelo" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#2A4C6B" />
+        <stop offset="100%" stopColor="#0E2E4A" />
+      </linearGradient>
+      <linearGradient id="tiCoral" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor="#FFB3C4" />
+        <stop offset="100%" stopColor="#EE6E8D" />
+      </linearGradient>
+    </defs>
+  );
+}
 
 type Props = { id: string; className?: string };
 
@@ -334,6 +367,7 @@ export default function TemaIcono({ id, className }: Props) {
   const contenido = ICONOS[id];
   return (
     <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <Degrades />
       {contenido ?? <circle cx="24" cy="24" r="11" fill={C} stroke={A} strokeWidth="1.8" />}
     </svg>
   );

@@ -8,11 +8,39 @@
 
 const O = "#0B3F70"; // contorno azul oscuro
 const A = "#0056A2"; // azul institucional
-const C = "#BFE3FF"; // celeste claro
-const L = "#EAF5FF"; // celeste muy claro
-const W = "#FFFFFF";
-const S = "#F7CDA9"; // piel
-const R = "#F58BA4"; // coral
+// Rellenos con degradé (mismo criterio que TemaIcono): volumen suave.
+const C = "url(#piCel)";
+const L = "url(#piClaro)";
+const W = "url(#piBlanco)";
+const S = "url(#piPiel)";
+const R = "url(#piCoral)";
+
+function Degrades() {
+  return (
+    <defs>
+      <linearGradient id="piCel" x1="0" y1="0" x2="0.4" y2="1">
+        <stop offset="0%" stopColor="#DCEEFF" />
+        <stop offset="100%" stopColor="#8CC5EC" />
+      </linearGradient>
+      <linearGradient id="piClaro" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="100%" stopColor="#D2E9FB" />
+      </linearGradient>
+      <linearGradient id="piBlanco" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="100%" stopColor="#E8F4FE" />
+      </linearGradient>
+      <linearGradient id="piPiel" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor="#FDE7D4" />
+        <stop offset="100%" stopColor="#EFBB93" />
+      </linearGradient>
+      <linearGradient id="piCoral" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stopColor="#FFB3C4" />
+        <stop offset="100%" stopColor="#EE6E8D" />
+      </linearGradient>
+    </defs>
+  );
+}
 
 type Props = { icon: string; className?: string };
 
@@ -366,6 +394,7 @@ export default function PuntoIcono({ icon, className }: Props) {
   }
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <Degrades />
       {contenido}
     </svg>
   );

@@ -54,12 +54,18 @@ export default function PosterClient({ tarjetas }: { tarjetas: Tarjeta[] }) {
                 t.destacada ? "sm:col-span-2 lg:col-span-1" : ""
               }`}
             >
-              <span
-                className={`grid h-14 w-14 place-items-center rounded-2xl bg-white p-2.5 shadow-soft ring-1 ring-sky/50 ${
-                  t.destacada ? "anim-wiggle" : "anim-bob-slow"
-                }`}
-              >
-                <TemaIcono id={t.id} className="h-full w-full" />
+              {/* Ilustración grande con halo, como la infografía del sanatorio */}
+              <span className="relative grid w-full place-items-center py-1">
+                <span
+                  aria-hidden
+                  className="absolute h-[112px] w-[112px] rounded-full bg-[radial-gradient(circle,#FFFFFF_0%,#DCEEFF_58%,rgba(191,227,255,0)_75%)]"
+                />
+                <TemaIcono
+                  id={t.id}
+                  className={`relative h-[104px] w-[104px] drop-shadow-[0_10px_16px_rgba(11,63,112,0.16)] ${
+                    t.destacada ? "anim-wiggle" : "anim-bob-slow"
+                  }`}
+                />
               </span>
               <h3 className="mt-3 font-display text-2xl leading-tight text-cocoa">
                 {t.titulo}
