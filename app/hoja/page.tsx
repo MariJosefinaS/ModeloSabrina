@@ -20,7 +20,7 @@ const AZUL = "#0056A2";
 const DORADO = "#C9A961";
 
 // Hexágono "punta arriba" (la proporción regular es alto = ancho × 1.1547).
-const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
+// Se dibuja en un viewBox cuadrado estirado con preserveAspectRatio="none".
 const HEX_PTS = "50,0 100,25 100,75 50,100 0,75 0,25";
 
 // ── Panal hexagonal de la entrada del sanatorio ────────────────
@@ -41,7 +41,7 @@ type Celda = {
   fila: number;
   tipo: "azul" | "gris" | "marco" | "foto";
   label?: string;
-  /** recorte de la foto, para que cada hexágono muestre algo distinto */
+  /** alineación del recorte: valor de preserveAspectRatio (ej. "xMidYMin") */
   pos?: string;
 };
 
@@ -55,14 +55,14 @@ function Hex({ celda }: { celda: Celda }) {
   };
 
   if (tipo === "foto") {
+    // La imagen ya viene recortada en hexágono con transparencia
+    // (`public/tapa-hex.png`, generada con Pillow desde tapa-mama-bebe.jpg):
+    // así la impresión no depende de que el motor respete un clip-path.
+    // ⚠️ Si se cambia la foto de tapa hay que REGENERAR ese PNG
+    //    (script: scripts/hexagonar-foto.py).
     return (
       <div className="absolute" style={style}>
-        <img
-          src="/tapa-mama-bebe.jpg"
-          alt=""
-          className="h-full w-full object-cover"
-          style={{ clipPath: HEX_CLIP, objectPosition: pos ?? "center" }}
-        />
+        <img src="/tapa-hex.png" alt="" className="h-full w-full" />
       </div>
     );
   }
@@ -100,7 +100,7 @@ const PANAL: Celda[] = [
   { col: 2, fila: 0, tipo: "gris" },
   { col: 4, fila: 0, tipo: "marco" },
   { col: 1, fila: 1, tipo: "azul", label: "Excelencia" },
-  { col: 3, fila: 1, tipo: "foto", pos: "50% 35%" },
+  { col: 3, fila: 1, tipo: "foto", pos: "xMidYMin" },
   { col: 5, fila: 1, tipo: "gris" },
   { col: 0, fila: 2, tipo: "gris" },
   { col: 2, fila: 2, tipo: "azul", label: "Compromiso" },
@@ -598,8 +598,10 @@ export default async function HojaPage() {
           {/* ── Panal hexagonal, calcado de la pared de la entrada ──
               La foto va dentro del hexágono grande; alrededor, las piezas
               con los valores institucionales y los marcos dorados. */}
-          <div className="relative mt-3 rounded-2xl bg-[#31363B] px-[3mm] py-[4mm] shadow-lg ring-1 ring-white/10">
-            <div className="relative mx-auto h-[83mm] w-[77mm]">
+          {/* El panel crece para absorber el sobrante: si no, el título
+              quedaba flotando en el medio con un hueco muerto abajo. */}
+          <div className="relative mt-3 flex flex-1 items-center justify-center rounded-2xl bg-[#31363B] px-[3mm] py-[4mm] shadow-lg ring-1 ring-white/10">
+            <div className="relative h-[83mm] w-[77mm]">
               {PANAL.map((c) => (
                 <Hex key={`${c.col}-${c.fila}`} celda={c} />
               ))}
@@ -613,10 +615,9 @@ export default async function HojaPage() {
             <p className="mt-2 font-display text-[11px] font-semibold uppercase leading-tight tracking-[0.05em] text-white/90">
               Guía práctica · Internación conjunta y primeros días en casa
             </p>
-            <div className="mx-auto my-2.5 h-px w-16 bg-white/40" />
           </div>
 
-          <div className="relative mt-auto flex items-center justify-center gap-2 pt-3 text-[9.5px] font-semibold text-white/85">
+          <div className="relative mt-2.5 flex items-center justify-center gap-2 border-t border-white/25 pt-2 text-[9.5px] font-semibold text-white/85">
             <IconoLinea name="qr" className="h-[13px] w-[13px] stroke-white" />
             Escaneá el QR del reverso y vela en tu teléfono
           </div>
