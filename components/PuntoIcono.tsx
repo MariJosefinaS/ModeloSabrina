@@ -134,6 +134,15 @@ const ICONOS: Record<string, React.ReactNode> = {
       <path d="M9 13.4c1.8 1.6 4.2 1.6 6 0" stroke={C} strokeWidth="1.8" strokeLinecap="round" fill="none" />
     </>
   ),
+  // pila de pañales — cuántos pañales por día
+  "🧷": (
+    <>
+      <path d="M3.6 3.6h16.8v2.8c0 3-1.8 4.9-4.4 5.8-1.5.5-2.9.5-4.4 0-2.6-.9-4.4-2.8-4.4-5.8z" fill={W} stroke={O} strokeWidth={sw} strokeLinejoin="round" />
+      <path d="M3.6 3.6h16.8v2.4H3.6z" fill={C} stroke={O} strokeWidth={sw} strokeLinejoin="round" />
+      <path d="M3.6 12.2h16.8V15c0 3-1.8 4.9-4.4 5.8-1.5.5-2.9.5-4.4 0-2.6-.9-4.4-2.8-4.4-5.8z" fill={L} stroke={O} strokeWidth={sw} strokeLinejoin="round" />
+      <path d="M3.6 12.2h16.8v2.4H3.6z" fill={C} stroke={O} strokeWidth={sw} strokeLinejoin="round" />
+    </>
+  ),
 
   // ── Acompañar a mamá ──────────────────────────────────────────
   // familia — red de apoyo
@@ -281,7 +290,15 @@ const ICONOS: Record<string, React.ReactNode> = {
       <path d="M17.4 3.4a3 3 0 1 0 1.8 4.8 3 3 0 0 1-1.8-4.8z" fill={C} stroke={O} strokeWidth="1.2" strokeLinejoin="round" />
     </>
   ),
-  // luz baja y silencio — menos estímulos
+  // colchón inclinado con el ángulo marcado — elevación a 30°
+  "📐": (
+    <>
+      <path d="M2.6 18.4h18.8v2.4a1 1 0 0 1-1 1H3.6a1 1 0 0 1-1-1z" fill={W} stroke={O} strokeWidth={sw} strokeLinejoin="round" />
+      <path d="M3.4 18.4 20.6 8.2a1.6 1.6 0 0 0-.6-1.5l-1.6-1a1.6 1.6 0 0 0-1.8.1L3.4 14.6z" fill={C} stroke={O} strokeWidth={sw} strokeLinejoin="round" />
+      <path d="M3.4 18.4h9.4" stroke={A} strokeWidth="1.4" strokeLinecap="round" strokeDasharray="2.6 2.2" fill="none" />
+      <path d="M11.6 18.4a8 8 0 0 0-.9-3.5" stroke={A} strokeWidth="1.5" strokeLinecap="round" fill="none" />
+    </>
+  ),
   // luz baja y silencio — menos estímulos (luna + zzz)
   "🤫": (
     <>

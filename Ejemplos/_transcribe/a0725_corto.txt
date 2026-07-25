@@ -1,0 +1,3 @@
+[00:00:00 -> 00:00:03] Esto sería la parte de la identificación.
+[00:00:03 -> 00:00:07] Habría que sacar lo que estaba ahí en el medio y poner eso.
+[00:00:07 -> 00:00:12] Es así como esto, mira, se está muerto.

@@ -71,12 +71,13 @@ export default function ForoClient({ initial }: { initial: Consulta[] }) {
           </label>
 
           <label className="block">
-            <span className="text-sm font-bold text-cocoa/80">Email (opcional)</span>
+            <span className="text-sm font-bold text-cocoa/80">Tu email</span>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Para avisarte cuando respondan"
+              required
+              placeholder="Para responderte a este correo"
               className="focus-cute mt-1 w-full rounded-2xl border-0 bg-cream px-4 py-3 text-cocoa shadow-inner ring-1 ring-black/5 placeholder:text-cocoa/40"
             />
           </label>
@@ -123,7 +124,7 @@ export default function ForoClient({ initial }: { initial: Consulta[] }) {
         )}
         {ok && (
           <p className="mt-3 rounded-2xl bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-200">
-            ¡Gracias! Tu consulta se publicó. Te vamos a responder pronto. 🤗
+            ¡Gracias! Recibimos tu consulta y te enviamos un mail de confirmación. Un profesional te responderá a la brevedad. 🤗
           </p>
         )}
 

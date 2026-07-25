@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { listConsultas, createConsulta } from "@/lib/store";
-import { notifyNewConsulta } from "@/lib/email";
+import { notifyNewConsulta, sendAcuseRecibo } from "@/lib/email";
 import { TemaConsulta } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -43,11 +43,17 @@ export async function POST(req: NextRequest) {
 
   try {
     const consulta = await createConsulta({ nombre, email, tema, mensaje });
-    // Aviso al mail interno. Si falla el envío, igual guardamos la consulta.
-    try {
-      await notifyNewConsulta(consulta);
-    } catch (err) {
-      console.error("No se pudo enviar el email de aviso:", err);
+    // Disparamos los dos mails en paralelo. Si falla el envío, igual
+    // guardamos la consulta (no bloqueamos al paciente).
+    const [avisoRes, acuseRes] = await Promise.allSettled([
+      notifyNewConsulta(consulta),
+      sendAcuseRecibo(consulta),
+    ]);
+    if (avisoRes.status === "rejected") {
+      console.error("No se pudo enviar el aviso interno:", avisoRes.reason);
+    }
+    if (acuseRes.status === "rejected") {
+      console.error("No se pudo enviar el acuse al paciente:", acuseRes.reason);
     }
     return NextResponse.json({ ok: true, consulta });
   } catch (err) {

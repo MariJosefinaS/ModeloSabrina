@@ -476,8 +476,16 @@ export default function EscenaInteractiva({ id }: { id: EscenaId }) {
   const [abierto, setAbierto] = useState(0);
   const punto = escena.puntos[abierto];
 
+  const total = escena.puntos.length;
+
   return (
     <div>
+      {/* Instrucción bien visible ARRIBA de la imagen */}
+      <p className="mb-2 flex items-center justify-center gap-2 rounded-full bg-marca px-3 py-1.5 text-center text-[13px] font-bold leading-tight text-white">
+        <span className="anim-bob-slow text-base">👆</span>
+        Tocá los números para ver cada consejo
+      </p>
+
       <div className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-b from-[#F2F9FF] to-[#E2F0FC] ring-1 ring-sky/50">
         <svg viewBox="0 0 400 320" className="w-full" role="img" aria-label={escena.titulo}>
           <Defs />
@@ -507,23 +515,41 @@ export default function EscenaInteractiva({ id }: { id: EscenaId }) {
                   opacity={activo ? 0.85 : 0.4}
                 />
                 <circle cx={p.tx} cy={p.ty} r={activo ? 6 : 4} fill={A} opacity={activo ? 0.9 : 0.5} />
-                {activo && (
-                  <circle cx={p.x} cy={p.y} r="24" fill={A} opacity="0.16" className="anim-pulse-dot" />
-                )}
+                {/* halo latiendo en TODOS los números (no solo el activo): es
+                    lo que avisa que se pueden tocar. Se escalonan con delay. */}
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r={activo ? 16 : 14}
+                  r="26"
+                  fill={A}
+                  opacity={activo ? 0.18 : 0.13}
+                  className="anim-pulse-dot"
+                  style={{ animationDelay: `${i * 420}ms` }}
+                />
+                {/* área de toque cómoda para el dedo */}
+                <circle cx={p.x} cy={p.y} r="26" fill="transparent" />
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={activo ? 19 : 17}
                   fill={activo ? A : "#FFFFFF"}
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                />
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={activo ? 19 : 17}
+                  fill="none"
                   stroke={O}
-                  strokeWidth="3"
+                  strokeWidth="2.5"
                 />
                 <text
                   x={p.x}
-                  y={p.y + 6}
+                  y={p.y + 7}
                   textAnchor="middle"
                   className="select-none font-display"
-                  fontSize="16"
+                  fontSize="19"
                   fontWeight="700"
                   fill={activo ? "#FFFFFF" : A}
                 >
@@ -535,16 +561,72 @@ export default function EscenaInteractiva({ id }: { id: EscenaId }) {
         </svg>
       </div>
 
+      {/* Botones con el título de cada punto: segunda vía de interacción,
+          por si no queda claro que los números de la imagen se tocan. */}
+      <div className="mt-3 flex flex-wrap justify-center gap-1.5">
+        {escena.puntos.map((p, i) => {
+          const activo = i === abierto;
+          return (
+            <button
+              key={i}
+              onClick={() => setAbierto(i)}
+              aria-pressed={activo}
+              className={`focus-cute inline-flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3 text-[13px] font-bold leading-tight transition ${
+                activo
+                  ? "bg-marca text-white shadow-soft"
+                  : "bg-white text-marca ring-1 ring-sky/60 hover:-translate-y-0.5 hover:ring-marca/50"
+              }`}
+            >
+              <span
+                className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-[12px] ${
+                  activo ? "bg-white/25 text-white" : "bg-skysoft/70 text-marca"
+                }`}
+              >
+                {i + 1}
+              </span>
+              {p.titulo}
+            </button>
+          );
+        })}
+      </div>
+
       {/* texto del punto tocado — solo frases del documento */}
       <div className="mt-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-sky/40">
-        <p className="font-display text-lg leading-tight text-marca">
-          {abierto + 1}. {punto.titulo}
-        </p>
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="font-display text-lg leading-tight text-marca">
+            {abierto + 1}. {punto.titulo}
+          </p>
+          <span className="shrink-0 text-xs font-bold text-cocoa/45">
+            {abierto + 1} de {total}
+          </span>
+        </div>
         <p className="mt-1 text-sm leading-snug text-cocoa/80">{punto.texto}</p>
+
+        <div className="mt-3 flex items-center justify-between gap-2 border-t border-sky/40 pt-3">
+          <button
+            onClick={() => setAbierto((abierto - 1 + total) % total)}
+            className="focus-cute rounded-full bg-skysoft/60 px-3 py-1 text-sm font-bold text-marca transition hover:bg-skysoft"
+          >
+            ‹ Anterior
+          </button>
+          <div className="flex gap-1.5">
+            {escena.puntos.map((_, i) => (
+              <span
+                key={i}
+                className={`h-2 rounded-full transition-all ${
+                  i === abierto ? "w-5 bg-marca" : "w-2 bg-sky"
+                }`}
+              />
+            ))}
+          </div>
+          <button
+            onClick={() => setAbierto((abierto + 1) % total)}
+            className="focus-cute rounded-full bg-marca px-3 py-1 text-sm font-bold text-white transition hover:brightness-110"
+          >
+            Siguiente ›
+          </button>
+        </div>
       </div>
-      <p className="mt-2 text-center text-xs font-semibold text-cocoa/55">
-        Tocá los números de la imagen
-      </p>
     </div>
   );
 }

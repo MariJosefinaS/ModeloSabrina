@@ -90,96 +90,60 @@ export const tarjetas: Tarjeta[] = [
     id: "eliminacion",
     emoji: "💧",
     titulo: "Eliminación",
-    clave: "Pis y caca en las primeras 24 h",
-    resumen: "Debe hacer al menos una de pis y una de meconio en el primer día.",
+    clave: "6 a 8 pañales por día",
+    resumen: "Al menos una de pis y una de caca en la internación; desde el 3.º día, 6 a 8 pañales.",
     color: "skysoft",
     puntos: [
       {
+        icon: "🧷",
+        titulo: "Cuántos",
+        texto: "Como mínimo, una deposición de pis y una de caca durante la internación. Desde el 3.º día de vida, entre 6 y 8 pañales en 24 h.",
+      },
+      {
         icon: "💦",
-        titulo: "Orina",
-        texto: "Al menos una vez en las primeras 24 h. Puede ser de color naranja o rosada (por los uratos): es normal.",
+        titulo: "La orina",
+        texto: "Puede ser de color naranja o rosada (por los uratos): es normal.",
       },
       {
         icon: "💩",
-        titulo: "Meconio",
-        texto: "La primera caca es pegajosa y de color negro verdoso. Al menos una en las primeras 24 h.",
+        titulo: "El meconio",
+        texto: "La primera caca es pegajosa y de color negro verdoso.",
       },
     ],
   },
   {
-    id: "acompanar-mama",
-    emoji: "🫂",
-    titulo: "Acompañar a mamá",
-    clave: "Rutinas y calma",
-    resumen: "Un tiempo sensible: mamá y bebé necesitan cuidado y compañía.",
-    color: "bubble",
+    id: "sueno",
+    emoji: "🌙",
+    titulo: "Sueño seguro",
+    clave: "Boca arriba y cuna libre",
+    resumen: "Boca arriba, cuna despejada y en su cuna al lado de la cama.",
+    color: "skysoft",
+    interactivos: ["crib"],
     puntos: [
       {
-        icon: "👨‍👩‍👧",
-        titulo: "Red de apoyo",
-        texto: "Los primeros tiempos son sensibles para mamá y bebé. Acompañan el papá, la pareja, la familia y el equipo de salud.",
+        icon: "🛏️",
+        titulo: "Boca arriba",
+        texto: "Siempre boca arriba. Cubrilo con la ropa de cama solo hasta las axilas, con la cara descubierta y los brazos por fuera de la sábana.",
       },
       {
-        icon: "⏳",
-        titulo: "Rutinas y horarios",
-        texto: "Ayuda respetar los horarios y dedicar tiempo a los cuidados: la lactancia, el baño, la preparación para dormir y el cambiado.",
+        icon: "🧸",
+        titulo: "Cuna despejada",
+        texto: "Sin almohada, juguetes, peluches ni chichoneras. Sin gorrito ni babero. Colchón firme y plano con sábana ajustada. Sin frazadas ni colchas gruesas.",
       },
       {
-        icon: "🕊️",
-        titulo: "Despacio",
-        texto: "Hacé los cuidados despacio y con tranquilidad, manteniendo la mirada y la comunicación con gestos.",
-      },
-    ],
-  },
-  {
-    id: "vestimenta",
-    emoji: "🧦",
-    titulo: "Vestimenta y temperatura",
-    clave: "Algodón, una muda más",
-    resumen: "Ropa de algodón, una capa más que la del adulto y ambiente agradable.",
-    color: "peach",
-    interactivos: ["outfit"],
-    puntos: [
-      {
-        icon: "👕",
-        titulo: "De algodón",
-        texto: "Ropa de algodón, cómoda y amplia, de colores claros, para que pueda moverse.",
+        icon: "🛌",
+        titulo: "Su cuna, al lado",
+        texto: "Duerme en su cuna, al lado de la cama: se puede usar cuna-colecho (la cuna al costado de la cama). Compartir la cama con el bebé aumenta el riesgo de accidentes.",
       },
       {
-        icon: "🌡️",
-        titulo: "Una muda más",
-        texto: "Una muda más que la del adulto. Temperatura ambiental agradable, cálida o fresca según la estación.",
+        icon: "📐",
+        titulo: "Colchón a 30°",
+        texto: "También se puede hacer una elevación del colchón a 30°, si tiene indicación médica.",
       },
       {
-        icon: "🌬️",
-        titulo: "Ambiente aireado",
-        texto: "Mantené el ambiente agradable y aireado.",
-      },
-    ],
-  },
-  {
-    id: "bano-cordon",
-    emoji: "🛁",
-    titulo: "Baño, uñas y cordón",
-    clave: "Cordón: gasa y alcohol 70%",
-    resumen: "Baño diario, uñas con lima y curación del cordón en cada cambio de pañal.",
-    color: "mint",
-    interactivos: ["diaper"],
-    puntos: [
-      {
-        icon: "🛁",
-        titulo: "Baño",
-        texto: "Con agua a temperatura ambiente y jabón para bebé. Puede ser todos los días o más de una vez; ustedes eligen la hora y la frecuencia. Es un momento de encuentro que incluso lo calma.",
-      },
-      {
-        icon: "💅",
-        titulo: "Uñas",
-        texto: "Se liman. No se cortan.",
-      },
-      {
-        icon: "🩹",
-        titulo: "Cordón / ombligo",
-        texto: "Durante la internación, curá la base en cada cambio de pañal con gasa y alcohol al 70%. Después lavalo en el baño y mantenelo seco.",
+        icon: "🤫",
+        titulo: "Menos estímulos",
+        texto: "Bajá la luz, los ruidos y la tele. Duermen la mayor parte del día, entre 18 y 20 h.",
       },
     ],
   },
@@ -209,33 +173,79 @@ export const tarjetas: Tarjeta[] = [
     ],
   },
   {
-    id: "sueno",
-    emoji: "🌙",
-    titulo: "Sueño seguro",
-    clave: "Boca arriba y cuna libre",
-    resumen: "Boca arriba, cuna despejada y en su cuna al lado de la cama.",
-    color: "skysoft",
-    interactivos: ["crib"],
+    id: "vestimenta",
+    emoji: "🧦",
+    titulo: "Vestimenta y temperatura",
+    clave: "Algodón, una muda más",
+    resumen: "Ropa de algodón, una capa más que la del adulto y ambiente agradable.",
+    color: "peach",
+    interactivos: ["outfit"],
     puntos: [
       {
-        icon: "🛏️",
-        titulo: "Boca arriba",
-        texto: "Siempre boca arriba. Cubrilo con la ropa de cama solo hasta las axilas, con la cara descubierta y los brazos por fuera de la sábana.",
+        icon: "👕",
+        titulo: "De algodón",
+        texto: "Ropa de algodón, cómoda y amplia, de colores claros, para que pueda moverse.",
       },
       {
-        icon: "🧸",
-        titulo: "Cuna despejada",
-        texto: "Sin almohada, juguetes, peluches ni chichoneras. Sin gorrito ni babero. Colchón firme y plano con sábana ajustada. Sin frazadas ni colchas gruesas.",
+        icon: "🌡️",
+        titulo: "Una muda más",
+        texto: "Abrigalo con una muda más que la del adulto.",
       },
       {
-        icon: "🛌",
-        titulo: "Su cuna, al lado",
-        texto: "Duerme en su cuna al lado de la cama de los padres. El colecho aumenta el riesgo de accidentes.",
+        icon: "🌬️",
+        titulo: "Ambiente agradable",
+        texto: "Temperatura agradable y aireada, cálida o fresca según la estación.",
+      },
+    ],
+  },
+  {
+    id: "bano-cordon",
+    emoji: "🛁",
+    titulo: "Baño, uñas y cordón",
+    clave: "Cordón: gasa y alcohol 70%",
+    resumen: "Baño diario, uñas con lima y curación del cordón en cada cambio de pañal.",
+    color: "mint",
+    interactivos: ["diaper"],
+    puntos: [
+      {
+        icon: "🛁",
+        titulo: "Baño",
+        texto: "Con agua a temperatura templada (26 a 28 °C) y jabón para bebé. Puede ser todos los días o más de una vez; ustedes eligen la hora y la frecuencia. Es un momento de encuentro que incluso lo calma.",
       },
       {
-        icon: "🤫",
-        titulo: "Menos estímulos",
-        texto: "Bajá la luz, los ruidos y la tele. Duermen la mayor parte del día, entre 18 y 20 h.",
+        icon: "💅",
+        titulo: "Uñas",
+        texto: "Se liman. No se cortan.",
+      },
+      {
+        icon: "🩹",
+        titulo: "Cordón / ombligo",
+        texto: "Durante la internación, curá la base en cada cambio de pañal con gasa y alcohol al 70%. Después lavalo en el baño y mantenelo seco.",
+      },
+    ],
+  },
+  {
+    id: "acompanar-mama",
+    emoji: "🫂",
+    titulo: "Acompañar a mamá",
+    clave: "Rutinas y calma",
+    resumen: "Un tiempo sensible: mamá y bebé necesitan cuidado y compañía.",
+    color: "bubble",
+    puntos: [
+      {
+        icon: "👨‍👩‍👧",
+        titulo: "Red de apoyo",
+        texto: "Los primeros tiempos son sensibles para mamá y bebé. Acompañan el papá, la pareja, la familia y el equipo de salud.",
+      },
+      {
+        icon: "⏳",
+        titulo: "Rutinas y horarios",
+        texto: "Ayuda respetar los horarios y dedicar tiempo a los cuidados: la lactancia, el baño, la preparación para dormir y el cambiado.",
+      },
+      {
+        icon: "🕊️",
+        titulo: "Despacio",
+        texto: "Hacé los cuidados despacio y con tranquilidad, manteniendo la mirada y la comunicación con gestos.",
       },
     ],
   },
@@ -243,14 +253,14 @@ export const tarjetas: Tarjeta[] = [
     id: "control",
     emoji: "🩺",
     titulo: "Control del bebé sano",
-    clave: "Primer control: 3 días",
-    resumen: "El primer control es dentro de los 3 días del alta.",
+    clave: "Primer control: 3.º a 7.º día",
+    resumen: "El primer control se hace entre el 3.º y el 7.º día de vida.",
     color: "sunshine",
     puntos: [
       {
         icon: "📅",
         titulo: "Primer control",
-        texto: "Debe hacerse dentro de los primeros 3 días del alta, o cuando lo indique tu pediatra.",
+        texto: "Debe hacerse entre el 3.º y el 7.º día de vida, o cuando lo indique tu pediatra.",
       },
     ],
   },
@@ -271,7 +281,7 @@ export const tarjetas: Tarjeta[] = [
       {
         icon: "🤮",
         titulo: "Vómitos",
-        texto: "Vomita dos o más tomas en un período de 24 h.",
+        texto: "Varios episodios de vómito abundante o verdoso. No es lo mismo que la regurgitación.",
       },
       {
         icon: "🌡️",
@@ -281,7 +291,7 @@ export const tarjetas: Tarjeta[] = [
       {
         icon: "💧",
         titulo: "Orina poco",
-        texto: "Orina poco y notan los pañales secos en 24 h.",
+        texto: "Notan los pañales secos en 24 h.",
       },
       {
         icon: "🥴",
@@ -311,6 +321,43 @@ export const tarjetas: Tarjeta[] = [
     ],
   },
 ];
+
+// ─────────────────────────────────────────────────────────────
+//  IDENTIFICACIÓN DEL RECIÉN NACIDO
+//  Panel para completar a mano (queda de recuerdo para la familia).
+//  Tomado tal cual de la hoja manuscrita del 2026-07-25.
+// ─────────────────────────────────────────────────────────────
+
+export type CampoFicha = {
+  etiqueta: string;
+  /** ancho relativo de la línea de puntos, para que la fila quede pareja */
+  ancho: "full" | "med" | "corto";
+  sufijo?: string;
+};
+
+export const identificacion = {
+  titulo: "Identificación",
+  /** filas de campos: cada fila es un renglón del panel */
+  filas: [
+    [{ etiqueta: "Mi nombre es", ancho: "full" }],
+    [
+      { etiqueta: "Nací el", ancho: "med" },
+      { etiqueta: "a las", ancho: "corto", sufijo: "hs" },
+    ],
+    [
+      { etiqueta: "Pesé", ancho: "corto" },
+      { etiqueta: "Medí", ancho: "corto" },
+      { etiqueta: "PC", ancho: "corto" },
+    ],
+    [
+      { etiqueta: "Apgar", ancho: "corto" },
+      { etiqueta: "Semanas / EG", ancho: "corto" },
+    ],
+  ] as CampoFicha[][],
+  huella: "Huella del pie",
+  equipoTitulo: "El equipo de salud",
+  equipo: ["Obstetra", "Neonatólogo/a", "Enfermera"],
+};
 
 export type Fuente = { nombre: string; detalle: string; url: string };
 

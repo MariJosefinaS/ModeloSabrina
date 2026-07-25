@@ -16,6 +16,9 @@ export const SITE = {
   direccion: "25 de Mayo 559",
   telefono: "+54 381 497-9500",
   telefonoHref: "tel:+543814979500",
+  // Internos que pidió la Maternidad (2026-07-25): Neonatología e
+  // Internación conjunta.
+  internos: "Internos 412 y 404 (Neonatología e Internación conjunta)",
   whatsapp: "+54 9 381 416-1127",
   whatsappHref: "https://api.whatsapp.com/send?phone=5493814161127",
   instagram: "https://instagram.com/sanatoriomodelo",

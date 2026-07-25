@@ -3,7 +3,7 @@ import QRCode from "qrcode";
 import PrintButton from "@/components/PrintButton";
 import TemaIcono from "@/components/TemaIcono";
 import PuntoIcono from "@/components/PuntoIcono";
-import { tarjetas, type Tarjeta } from "@/lib/content";
+import { identificacion, tarjetas, type Tarjeta } from "@/lib/content";
 import { SITE } from "@/lib/site";
 
 export const metadata = {
@@ -16,6 +16,77 @@ const byId = Object.fromEntries(tarjetas.map((t) => [t.id, t])) as Record<
 >;
 
 const AZUL = "#0056A2";
+// Dorado de los marcos hexagonales de la pared de entrada del sanatorio.
+const DORADO = "#C9A961";
+
+// Hexágono "punta arriba" (la proporción regular es alto = ancho × 1.1547).
+const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
+const HEX_PTS = "50,0 100,25 100,75 50,100 0,75 0,25";
+
+/**
+ * Hexágono del panal de la tapa, calcado de la instalación de la entrada
+ * del sanatorio (foto `Ejemplos/WhatsApp Image 2026-07-25 at 14.36.01.jpeg`):
+ * hexágonos sólidos con palabras, marcos dorados vacíos y piezas claras.
+ */
+function Hex({
+  w,
+  x,
+  y,
+  fill,
+  stroke,
+  label,
+  labelSize = 6.4,
+  labelColor = AZUL,
+  rotate = 0,
+}: {
+  /** ancho en mm */
+  w: number;
+  /** posición desde la izquierda / arriba del panal, en mm */
+  x: number;
+  y: number;
+  fill?: string;
+  stroke?: string;
+  label?: string;
+  labelSize?: number;
+  labelColor?: string;
+  rotate?: number;
+}) {
+  return (
+    <div
+      className="absolute"
+      style={{
+        left: `${x}mm`,
+        top: `${y}mm`,
+        width: `${w}mm`,
+        height: `${w * 1.1547}mm`,
+        transform: rotate ? `rotate(${rotate}deg)` : undefined,
+      }}
+    >
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
+        <polygon
+          points={HEX_PTS}
+          fill={fill ?? "none"}
+          stroke={stroke ?? "none"}
+          strokeWidth={stroke ? 3 : 0}
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+      {label && (
+        <span
+          className="absolute inset-0 grid place-items-center px-[1mm] text-center font-display font-bold uppercase leading-none"
+          style={{
+            fontSize: `${labelSize}px`,
+            letterSpacing: "0.06em",
+            color: labelColor,
+          }}
+        >
+          {label}
+        </span>
+      )}
+    </div>
+  );
+}
 
 // ── Ambientación: formas orgánicas y hojitas de fondo, como en la
 //    infografía del sanatorio. Van detrás del contenido, muy tenues.
@@ -182,10 +253,18 @@ function Tema({
       }`}
     >
       <div className="flex flex-col items-center">
-        <span className="grid h-[50px] w-[50px] place-items-center rounded-full bg-sky p-[6px] ring-[3px] ring-white outline outline-1 outline-marca/25">
+        <span
+          className={`grid place-items-center rounded-full bg-sky p-[6px] ring-[3px] ring-white outline outline-1 outline-marca/25 ${
+            dense ? "h-[42px] w-[42px]" : "h-[50px] w-[50px]"
+          }`}
+        >
           <TemaIcono id={t.id} className="h-full w-full" />
         </span>
-        <h3 className="mt-1.5 text-center font-display text-[13px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
+        <h3
+          className={`mt-1 text-center font-display font-bold uppercase leading-tight tracking-[0.03em] text-marca ${
+            dense ? "text-[12px]" : "text-[13px]"
+          }`}
+        >
           {t.titulo}
         </h3>
         <span className="mt-[3px] h-[3px] w-9 rounded-full bg-sky" />
@@ -216,6 +295,45 @@ function Tema({
         ))}
       </ul>
     </section>
+  );
+}
+
+// ── Huellita, para el badge del panel de identificación ────────
+function Huellita({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <ellipse cx="22" cy="30" rx="11" ry="13" fill={AZUL} opacity="0.9" />
+      <ellipse cx="14.5" cy="14.5" rx="4" ry="4.6" fill={AZUL} opacity="0.75" />
+      <ellipse cx="22.5" cy="11.5" rx="3.6" ry="4.2" fill={AZUL} opacity="0.75" />
+      <ellipse cx="30" cy="12.5" rx="3.2" ry="3.8" fill={AZUL} opacity="0.75" />
+      <ellipse cx="36" cy="17" rx="2.8" ry="3.2" fill={AZUL} opacity="0.75" />
+    </svg>
+  );
+}
+
+// ── Línea de puntos para completar a mano ──────────────────────
+function Campo({
+  etiqueta,
+  ancho,
+  sufijo,
+}: {
+  etiqueta: string;
+  ancho: string;
+  sufijo?: string;
+}) {
+  const flex = ancho === "full" ? "flex-[3]" : ancho === "med" ? "flex-[2]" : "flex-1";
+  return (
+    <span className={`flex min-w-0 items-baseline gap-1 ${flex}`}>
+      <span className="shrink-0 font-display text-[10.5px] font-bold text-marca">
+        {etiqueta}
+      </span>
+      <span className="min-w-[6mm] flex-1 border-b border-dotted border-marca/45" />
+      {sufijo && (
+        <span className="shrink-0 text-[9.5px] font-semibold text-[#5A6875]">
+          {sufijo}
+        </span>
+      )}
+    </span>
   );
 }
 
@@ -252,136 +370,149 @@ export default async function HojaPage() {
         Cara externa
       </p>
       <div className="trifold trifold-zoom page-break rounded-2xl shadow-soft">
-        {/* SOLAPA (izquierda, se pliega hacia adentro): cuándo consultar */}
-        <div className="panel flex flex-col bg-[#F7FBFF] p-[5mm]">
+        {/* SOLAPA (izquierda, se pliega hacia adentro y queda detrás de la
+            tapa): ficha de identificación del recién nacido. */}
+        <div className="panel flex flex-col bg-[#F7FBFF] p-[6mm]">
           <Fondo variante={2} />
-          <div className="relative rounded-xl bg-marca px-3 py-2 text-center">
-            <p className="font-display text-[14px] font-bold uppercase leading-tight tracking-[0.04em] text-white">
-              Cuándo consultar
-            </p>
+
+          <div className="relative flex flex-col items-center">
+            <span className="grid h-[50px] w-[50px] place-items-center rounded-full bg-sky p-[9px] ring-[3px] ring-white outline outline-1 outline-marca/25">
+              <Huellita className="h-full w-full" />
+            </span>
+            <h3 className="mt-1.5 text-center font-display text-[14px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
+              {identificacion.titulo}
+            </h3>
+            <span className="mt-[3px] h-[3px] w-9 rounded-full bg-sky" />
           </div>
-          <div className="mt-2 flex flex-1 flex-col">
-            <Tema t={byId["alarma"]} grow tinte={0} />
+
+          {/* Datos del bebé, para completar a mano */}
+          <div className="relative mt-4 grid gap-[3.5mm]">
+            {identificacion.filas.map((fila, i) => (
+              <div key={i} className="flex items-baseline gap-3">
+                {fila.map((c) => (
+                  <Campo
+                    key={c.etiqueta}
+                    etiqueta={c.etiqueta}
+                    ancho={c.ancho}
+                    sufijo={c.sufijo}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Huella del pie */}
+          <div className="relative mt-4 flex flex-1 flex-col rounded-2xl border-2 border-dashed border-marca/30 bg-white/70 p-2">
+            <p className="text-center font-display text-[10.5px] font-bold uppercase tracking-[0.05em] text-marca/70">
+              {identificacion.huella}
+            </p>
+            <div className="grid flex-1 place-items-center">
+              <Huellita className="h-[26mm] w-[26mm] opacity-[0.09]" />
+            </div>
+          </div>
+
+          {/* Equipo de salud */}
+          <div className="relative mt-4">
+            <p className="font-display text-[11.5px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
+              {identificacion.equipoTitulo}
+            </p>
+            <span className="mt-[3px] block h-[3px] w-9 rounded-full bg-sky" />
+            <div className="mt-2.5 grid gap-[3.5mm]">
+              {identificacion.equipo.map((rol) => (
+                <Campo key={rol} etiqueta={rol} ancho="full" />
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* CONTRATAPA (centro): institucional + QR + contacto */}
-        <div className="panel flex flex-col p-[7mm]">
+        {/* CONTRATAPA (centro): signos de alarma + contacto + QR */}
+        <div className="panel flex flex-col p-[6mm]">
           <div className="flex items-center gap-2 border-b-2 border-marca/15 pb-2">
             <img
               src="/logo-sanatorio.png"
               alt={SITE.institucion}
-              className="h-10 w-auto"
+              className="h-9 w-auto"
             />
-            <div>
-              <p className="font-display text-[13px] font-bold leading-tight text-marca">
+            <div className="flex-1">
+              <p className="font-display text-[12px] font-bold leading-tight text-marca">
                 {SITE.institucion}
               </p>
-              <p className="text-[9px] leading-tight text-[#5A6875]">
+              <p className="text-[8.5px] leading-tight text-[#5A6875]">
                 {SITE.ciudad}
               </p>
             </div>
+            <Sello80 className="h-[38px] w-[38px] shrink-0" />
           </div>
 
-          <div className="flex flex-1 flex-col justify-between">
-            {/* Sello 80 años */}
-            <div className="mt-3 flex items-center gap-3">
-              <Sello80 className="h-[76px] w-[76px] shrink-0" />
-              <div>
-                <p className="font-display text-[12px] font-bold uppercase leading-tight tracking-wide text-marca">
-                  Celebrando nuestros 80 años
-                </p>
-                <p className="mt-[2px] text-[10px] leading-snug text-[#44515F]">
-                  Junto a las familias tucumanas, con excelencia y compromiso.
-                </p>
-              </div>
-            </div>
+          {/* Cuándo consultar → signos de alarma */}
+          <div className="mt-2.5 rounded-xl bg-marca px-3 py-[5px] text-center">
+            <p className="font-display text-[13px] font-bold uppercase leading-tight tracking-[0.04em] text-white">
+              Cuándo consultar
+            </p>
+          </div>
+          <div className="mt-2">
+            <Tema t={byId["alarma"]} dense tinte={0} />
+          </div>
 
-            {/* QR */}
-            <div className="mt-3 flex items-center gap-3 rounded-2xl bg-[#F1F7FC] p-3 ring-1 ring-marca/15">
-              <div
-                className="h-[96px] w-[96px] shrink-0 [&_svg]:h-full [&_svg]:w-full"
-                dangerouslySetInnerHTML={{ __html: qrSvg }}
-                aria-label="Código QR"
-              />
-              <div>
-                <p className="flex items-center gap-1 font-display text-[12.5px] font-bold leading-tight text-marca">
-                  <IconoLinea name="qr" className="h-4 w-4 shrink-0" />
-                  Escaneá y vela en tu teléfono
-                </p>
-                <p className="mt-1 text-[9.5px] leading-snug text-[#44515F]">
-                  La guía completa, con imágenes para tocar y un espacio para
-                  dejar tus consultas. Si no podés entrar, guardá este tríptico.
-                </p>
-              </div>
-            </div>
-
-            {/* Índice de temas */}
-            <div className="mt-3 rounded-2xl bg-skysoft/40 p-3 ring-1 ring-sky/50">
-              <p className="text-center font-display text-[11.5px] font-bold uppercase tracking-wide text-marca">
-                Todo en un solo lugar
+          {/* QR */}
+          <div className="mt-2.5 flex items-center gap-2.5 rounded-2xl bg-[#F1F7FC] p-2.5 ring-1 ring-marca/15">
+            <div
+              className="h-[80px] w-[80px] shrink-0 [&_svg]:h-full [&_svg]:w-full"
+              dangerouslySetInnerHTML={{ __html: qrSvg }}
+              aria-label="Código QR"
+            />
+            <div>
+              <p className="flex items-center gap-1 font-display text-[11.5px] font-bold leading-tight text-marca">
+                <IconoLinea name="qr" className="h-[14px] w-[14px] shrink-0" />
+                Escaneá y vela en tu teléfono
               </p>
-              <ul className="mt-2 grid grid-cols-2 gap-x-2 gap-y-[5px]">
-                {tarjetas.map((t) => (
-                  <li
-                    key={t.id}
-                    className="flex items-center gap-1.5 text-[9.2px] font-semibold leading-tight text-marca"
-                  >
-                    <span className="grid h-[19px] w-[19px] shrink-0 place-items-center rounded-full bg-white p-[2px] ring-1 ring-sky">
-                      <TemaIcono id={t.id} className="h-full w-full" />
-                    </span>
-                    {t.titulo}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Contacto */}
-            <div className="mt-3">
-              <p className="font-display text-[12.5px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
-                Datos de contacto
+              <p className="mt-1 text-[9px] leading-snug text-[#44515F]">
+                La guía completa, con imágenes para tocar y un espacio para
+                dejar tus consultas. Si no podés entrar, guardá este tríptico.
               </p>
-              <span className="mt-[3px] block h-[3px] w-9 rounded-full bg-sky" />
-              <ul className="mt-2 grid gap-[6px] text-[10px] leading-snug text-[#44515F]">
-                <li className="flex gap-2">
-                  <IconoLinea name="pin" className="mt-[1px] h-[13px] w-[13px] shrink-0" />
-                  <span>
-                    <strong className="text-marca">Dirección.</strong>{" "}
-                    {SITE.direccion} — {SITE.ciudad}
-                  </span>
-                </li>
-                <li className="flex gap-2">
-                  <IconoLinea name="tel" className="mt-[1px] h-[13px] w-[13px] shrink-0" />
-                  <span>
-                    <strong className="text-marca">Teléfono.</strong>{" "}
-                    {SITE.telefono}
-                  </span>
-                </li>
-                <li className="flex gap-2">
-                  <IconoLinea name="chat" className="mt-[1px] h-[13px] w-[13px] shrink-0" />
-                  <span>
-                    <strong className="text-marca">WhatsApp.</strong>{" "}
-                    {SITE.whatsapp}
-                  </span>
-                </li>
-                <li className="flex gap-2">
-                  <IconoLinea name="web" className="mt-[1px] h-[13px] w-[13px] shrink-0" />
-                  <span>
-                    <strong className="text-marca">Web.</strong> {SITE.webLabel}
-                  </span>
-                </li>
-                <li className="flex gap-2">
-                  <IconoLinea name="ig" className="mt-[1px] h-[13px] w-[13px] shrink-0" />
-                  <span>
-                    <strong className="text-marca">Instagram.</strong>{" "}
-                    @sanatoriomodelo
-                  </span>
-                </li>
-              </ul>
             </div>
           </div>
 
-          <p className="mt-3 border-t border-marca/10 pt-2 text-[8px] leading-tight text-[#6B7783]">
+          {/* Contacto */}
+          <div className="mt-2.5">
+            <p className="font-display text-[11.5px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
+              Datos de contacto
+            </p>
+            <span className="mt-[3px] block h-[3px] w-9 rounded-full bg-sky" />
+            <ul className="mt-1.5 grid gap-[4px] text-[9.4px] leading-snug text-[#44515F]">
+              <li className="flex gap-2">
+                <IconoLinea name="pin" className="mt-[1px] h-[12px] w-[12px] shrink-0" />
+                <span>
+                  <strong className="text-marca">Dirección.</strong>{" "}
+                  {SITE.direccion} — {SITE.ciudad}
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <IconoLinea name="tel" className="mt-[1px] h-[12px] w-[12px] shrink-0" />
+                <span>
+                  <strong className="text-marca">Teléfono.</strong>{" "}
+                  {SITE.telefono} · {SITE.internos}
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <IconoLinea name="chat" className="mt-[1px] h-[12px] w-[12px] shrink-0" />
+                <span>
+                  <strong className="text-marca">WhatsApp.</strong>{" "}
+                  {SITE.whatsapp}
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <IconoLinea name="web" className="mt-[1px] h-[12px] w-[12px] shrink-0" />
+                <span>
+                  <strong className="text-marca">Web.</strong> {SITE.webLabel} ·{" "}
+                  <strong className="text-marca">Instagram.</strong>{" "}
+                  @sanatoriomodelo
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <p className="mt-auto border-t border-marca/10 pt-1.5 text-[7.6px] leading-tight text-[#6B7783]">
             Información orientativa para acompañarte durante la internación. No
             reemplaza el consejo de tu equipo de salud. Ante cualquier duda,
             preguntá al personal de enfermería o a tu pediatra.
@@ -422,21 +553,49 @@ export default async function HojaPage() {
             </div>
           </div>
 
-          {/* Foto mamá + bebé */}
-          <div className="relative mt-4">
-            <img
-              src="/tapa-mama-bebe.jpg"
-              alt="Mamá sosteniendo a su bebé"
-              className="h-[300px] w-full rounded-2xl object-cover object-top shadow-lg ring-4 ring-white/70"
-            />
+          {/* ── Panal hexagonal, calcado de la pared de la entrada ──
+              La foto va dentro del hexágono grande; alrededor, las piezas
+              con los valores institucionales y los marcos dorados. */}
+          <div className="relative mx-auto mt-3 h-[92mm] w-[80mm]">
+            {/* marcos dorados vacíos */}
+            <Hex w={13} x={2} y={0} stroke={DORADO} />
+            <Hex w={12} x={2} y={66} stroke={DORADO} />
+            <Hex w={15} x={63} y={68} stroke={DORADO} />
+
+            {/* piezas claras de relleno */}
+            <Hex w={10} x={36} y={0} fill="rgba(255,255,255,.18)" />
+            <Hex w={11} x={13} y={79} fill="rgba(255,255,255,.22)" />
+
+            {/* foto de mamá + bebé, recortada en hexágono */}
+            <div
+              className="absolute"
+              style={{ left: "2mm", top: "14mm", width: "44mm", height: `${44 * 1.1547}mm` }}
+            >
+              <div
+                className="h-full w-full p-[1.1mm]"
+                style={{ clipPath: HEX_CLIP, background: "rgba(255,255,255,.85)" }}
+              >
+                <img
+                  src="/tapa-mama-bebe.jpg"
+                  alt="Mamá sosteniendo a su bebé"
+                  className="h-full w-full object-cover object-top"
+                  style={{ clipPath: HEX_CLIP }}
+                />
+              </div>
+            </div>
+
+            {/* valores institucionales */}
+            <Hex w={25} x={52} y={4} fill="#FFFFFF" label="Excelencia" labelSize={7} />
+            <Hex w={27} x={50} y={35} fill="#FFFFFF" label="Compromiso" labelSize={7} />
+            <Hex w={21} x={26} y={66} fill="#8ECAE6" label="Calidad" labelSize={7} />
           </div>
 
-          <div className="relative mt-4 text-center">
-            <h1 className="font-display text-[27px] font-bold leading-none">
+          <div className="relative mt-3 text-center">
+            <h1 className="font-display text-[26px] font-bold leading-none">
               Cuidados de tu bebé
             </h1>
-            <p className="mt-2 font-display text-[11.5px] font-semibold uppercase leading-tight tracking-[0.06em] text-white/90">
-              Guía práctica · {SITE.programa}
+            <p className="mt-2 font-display text-[11px] font-semibold uppercase leading-tight tracking-[0.05em] text-white/90">
+              Guía práctica · Internación conjunta y primeros días en casa
             </p>
             <div className="mx-auto my-2.5 h-px w-16 bg-white/40" />
           </div>
@@ -454,25 +613,25 @@ export default async function HojaPage() {
       </p>
       <div className="trifold trifold-zoom rounded-2xl shadow-soft">
         {/* Columna 1 */}
-        <div className="panel flex flex-col justify-between gap-[2mm] p-[4.5mm]">
+        <div className="panel flex flex-col justify-between gap-[2mm] p-[4mm]">
           <Fondo variante={0} />
-          <Tema t={byId["alimentacion"]} tinte={0} />
-          <Tema t={byId["vinculo"]} tinte={1} />
-          <Tema t={byId["eliminacion"]} tinte={2} />
+          <Tema t={byId["alimentacion"]} dense tinte={0} />
+          <Tema t={byId["vinculo"]} dense tinte={1} />
+          <Tema t={byId["eliminacion"]} dense tinte={2} />
         </div>
         {/* Columna 2 */}
-        <div className="panel flex flex-col justify-between gap-[2.5mm] bg-[#F7FBFF] p-[5mm]">
+        <div className="panel flex flex-col justify-between gap-[2mm] bg-[#F7FBFF] p-[4mm]">
           <Fondo variante={1} />
-          <Tema t={byId["acompanar-mama"]} tinte={1} />
-          <Tema t={byId["vestimenta"]} tinte={2} />
-          <Tema t={byId["bano-cordon"]} tinte={0} />
+          <Tema t={byId["sueno"]} dense tinte={1} />
+          <Tema t={byId["llanto"]} dense tinte={2} />
+          <Tema t={byId["vestimenta"]} dense tinte={0} />
         </div>
         {/* Columna 3 */}
-        <div className="panel flex flex-col justify-between gap-[2mm] p-[4.5mm]">
+        <div className="panel flex flex-col justify-between gap-[2mm] p-[4mm]">
           <Fondo variante={2} />
-          <Tema t={byId["llanto"]} tinte={2} />
-          <Tema t={byId["sueno"]} tinte={0} />
-          <Tema t={byId["control"]} tinte={1} />
+          <Tema t={byId["bano-cordon"]} dense tinte={2} />
+          <Tema t={byId["acompanar-mama"]} dense tinte={0} />
+          <Tema t={byId["control"]} dense tinte={1} />
         </div>
       </div>
     </div>
