@@ -26,7 +26,14 @@ type Punto = {
   titulo: string;
   texto: string;
 };
-type Escena = { titulo: string; dibujo: React.ReactNode; puntos: Punto[] };
+type Escena = {
+  titulo: string;
+  dibujo: React.ReactNode;
+  puntos: Punto[];
+  /** `titulo` de los Punto de lib/content.ts que esta escena YA explica.
+   *  El modal los oculta de la lista de abajo para no repetir. */
+  cubre: string[];
+};
 
 // ── Degradés y filtros compartidos (el "look" de la infografía) ──
 function Defs() {
@@ -72,6 +79,7 @@ function Piso({ cx, cy, rx = 120, ry = 16 }: { cx: number; cy: number; rx?: numb
 // ── Escena 1: buen agarre (mamá amamantando) ──
 const nursing: Escena = {
   titulo: "Buen agarre",
+  cubre: ["Buen agarre", "A libre demanda"],
   puntos: [
     {
       x: 356,
@@ -167,6 +175,7 @@ const nursing: Escena = {
 // ── Escena 2: sueño seguro (cuna) ──
 const crib: Escena = {
   titulo: "Sueño seguro",
+  cubre: ["Boca arriba", "Cuna despejada", "Su cuna, al lado", "Menos estímulos"],
   puntos: [
     {
       x: 200,
@@ -264,6 +273,7 @@ const crib: Escena = {
 // ── Escena 3: vestimenta y temperatura ──
 const outfit: Escena = {
   titulo: "Vestimenta y temperatura",
+  cubre: ["De algodón", "Una muda más", "Ambiente agradable"],
   puntos: [
     {
       x: 200,
@@ -368,6 +378,7 @@ const outfit: Escena = {
 // ── Escena 4: baño, uñas y cordón ──
 const diaper: Escena = {
   titulo: "Baño, uñas y cordón",
+  cubre: ["Baño", "Uñas", "Cordón / ombligo"],
   puntos: [
     {
       x: 200,
@@ -470,6 +481,14 @@ const diaper: Escena = {
 };
 
 const ESCENAS: Record<EscenaId, Escena> = { nursing, crib, outfit, diaper };
+
+/** Qué puntos de lib/content.ts ya explica cada escena (para no duplicarlos). */
+export const CUBRE: Record<EscenaId, string[]> = {
+  nursing: nursing.cubre,
+  crib: crib.cubre,
+  outfit: outfit.cubre,
+  diaper: diaper.cubre,
+};
 
 export default function EscenaInteractiva({ id }: { id: EscenaId }) {
   const escena = ESCENAS[id];

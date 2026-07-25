@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { Tarjeta } from "@/lib/content";
 import TemaIcono from "@/components/TemaIcono";
 import PuntoIcono from "@/components/PuntoIcono";
-import EscenaInteractiva from "@/components/EscenaInteractiva";
+import EscenaInteractiva, { CUBRE, type EscenaId } from "@/components/EscenaInteractiva";
 
 // Tintes azul/celeste por tarjeta (paleta institucional). Clases literales
 // para que Tailwind las tome. Cada tarjeta tiene una variante suave distinta.
@@ -131,25 +131,47 @@ export default function PosterClient({ tarjetas }: { tarjetas: Tarjeta[] }) {
                 </div>
               ))}
 
-              <ul className="grid gap-3">
-                {abierta.puntos.map((p, i) => (
-                  <li
-                    key={i}
-                    className="flex gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5"
-                  >
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-skysoft/50 p-1 text-xl ring-1 ring-sky/30">
-                      <PuntoIcono icon={p.icon} className="h-full w-full" />
-                    </span>
-                    <div>
-                      <h3 className="font-display text-lg leading-tight text-cocoa">
-                        {p.titulo}
-                      </h3>
-                      <p className="mt-0.5 text-sm text-cocoa/75">{p.texto}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-
+              {/* Los puntos que el interactivo ya explica NO se repiten acá. */}
+              {(() => {
+                const yaExplicados = new Set(
+                  (abierta.interactivos ?? []).flatMap(
+                    (c) => CUBRE[c as EscenaId] ?? []
+                  )
+                );
+                const resto = abierta.puntos.filter(
+                  (p) => !yaExplicados.has(p.titulo)
+                );
+                if (resto.length === 0) return null;
+                return (
+                  <>
+                    {yaExplicados.size > 0 && (
+                      <p className="mb-2 font-display text-lg text-cocoa/70">
+                        Además
+                      </p>
+                    )}
+                    <ul className="grid gap-3">
+                      {resto.map((p, i) => (
+                        <li
+                          key={i}
+                          className="flex gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-black/5"
+                        >
+                          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-skysoft/50 p-1 text-xl ring-1 ring-sky/30">
+                            <PuntoIcono icon={p.icon} className="h-full w-full" />
+                          </span>
+                          <div>
+                            <h3 className="font-display text-lg leading-tight text-cocoa">
+                              {p.titulo}
+                            </h3>
+                            <p className="mt-0.5 text-sm text-cocoa/75">
+                              {p.texto}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>

@@ -23,63 +23,66 @@ const DORADO = "#C9A961";
 const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
 const HEX_PTS = "50,0 100,25 100,75 50,100 0,75 0,25";
 
-/**
- * Hexágono del panal de la tapa, calcado de la instalación de la entrada
- * del sanatorio (foto `Ejemplos/WhatsApp Image 2026-07-25 at 14.36.01.jpeg`):
- * hexágonos sólidos con palabras, marcos dorados vacíos y piezas claras.
- */
-function Hex({
-  w,
-  x,
-  y,
-  fill,
-  stroke,
-  label,
-  labelSize = 6.4,
-  labelColor = AZUL,
-  rotate = 0,
-}: {
-  /** ancho en mm */
-  w: number;
-  /** posición desde la izquierda / arriba del panal, en mm */
-  x: number;
-  y: number;
-  fill?: string;
-  stroke?: string;
+// ── Panal hexagonal de la entrada del sanatorio ────────────────
+//  Calcado de `Ejemplos/WhatsApp Image 2026-07-25 at 14.36.01.jpeg`:
+//  hexágonos TRAMADOS (comparten arista) sobre un panel grafito, con
+//  piezas azules de texto blanco, marcos dorados vacíos, piezas grises
+//  claras y fotos del equipo/las familias.
+//
+//  Geometría: hexágono punta-arriba de ancho W y alto H = W·1.1547.
+//  Vecino horizontal → dx = W. Vecino diagonal → dx = W/2, dy = 0.75·H.
+//  Se posiciona por celda (col, fila) con (col + fila) par.
+const HEX_W = 22; // mm
+const HEX_H = HEX_W * 1.1547;
+const GRIS = "#DDE3E8";
+
+type Celda = {
+  col: number;
+  fila: number;
+  tipo: "azul" | "gris" | "marco" | "foto";
   label?: string;
-  labelSize?: number;
-  labelColor?: string;
-  rotate?: number;
-}) {
+  /** recorte de la foto, para que cada hexágono muestre algo distinto */
+  pos?: string;
+};
+
+function Hex({ celda }: { celda: Celda }) {
+  const { col, fila, tipo, label, pos } = celda;
+  const style: React.CSSProperties = {
+    left: `${(col * HEX_W) / 2}mm`,
+    top: `${fila * 0.75 * HEX_H}mm`,
+    width: `${HEX_W}mm`,
+    height: `${HEX_H}mm`,
+  };
+
+  if (tipo === "foto") {
+    return (
+      <div className="absolute" style={style}>
+        <img
+          src="/tapa-mama-bebe.jpg"
+          alt=""
+          className="h-full w-full object-cover"
+          style={{ clipPath: HEX_CLIP, objectPosition: pos ?? "center" }}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div
-      className="absolute"
-      style={{
-        left: `${x}mm`,
-        top: `${y}mm`,
-        width: `${w}mm`,
-        height: `${w * 1.1547}mm`,
-        transform: rotate ? `rotate(${rotate}deg)` : undefined,
-      }}
-    >
+    <div className="absolute" style={style}>
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
         <polygon
           points={HEX_PTS}
-          fill={fill ?? "none"}
-          stroke={stroke ?? "none"}
-          strokeWidth={stroke ? 3 : 0}
+          fill={tipo === "azul" ? AZUL : tipo === "gris" ? GRIS : "none"}
+          stroke={tipo === "marco" ? DORADO : "none"}
+          strokeWidth={tipo === "marco" ? 3.5 : 0}
           strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
         />
       </svg>
       {label && (
         <span
-          className="absolute inset-0 grid place-items-center px-[1mm] text-center font-display font-bold uppercase leading-none"
-          style={{
-            fontSize: `${labelSize}px`,
-            letterSpacing: "0.06em",
-            color: labelColor,
-          }}
+          className="absolute inset-0 grid place-items-center px-[1.5mm] text-center font-display text-[6.2px] font-bold uppercase leading-none text-white"
+          style={{ letterSpacing: "0.07em" }}
         >
           {label}
         </span>
@@ -87,6 +90,25 @@ function Hex({
     </div>
   );
 }
+
+// El mismo racimo que hay en la pared: fotos, valores y marcos vacíos.
+//  OJO: hoy hay UNA sola foto disponible (stock). En la pared cada
+//  hexágono lleva una foto distinta; cuando lleguen las fotos reales del
+//  sanatorio se suman más celdas `foto` acá.
+const PANAL: Celda[] = [
+  { col: 0, fila: 0, tipo: "marco" },
+  { col: 2, fila: 0, tipo: "gris" },
+  { col: 4, fila: 0, tipo: "marco" },
+  { col: 1, fila: 1, tipo: "azul", label: "Excelencia" },
+  { col: 3, fila: 1, tipo: "foto", pos: "50% 35%" },
+  { col: 5, fila: 1, tipo: "gris" },
+  { col: 0, fila: 2, tipo: "gris" },
+  { col: 2, fila: 2, tipo: "azul", label: "Compromiso" },
+  { col: 4, fila: 2, tipo: "marco" },
+  { col: 1, fila: 3, tipo: "azul", label: "Calidad" },
+  { col: 3, fila: 3, tipo: "marco" },
+  { col: 5, fila: 3, tipo: "gris" },
+];
 
 // ── Ambientación: formas orgánicas y hojitas de fondo, como en la
 //    infografía del sanatorio. Van detrás del contenido, muy tenues.
@@ -233,17 +255,49 @@ function Sello80({ className = "", blanco = false }: { className?: string; blanc
 }
 
 // ── Bloque de un tema: ilustración circular + título centrado + viñetas
+//  `size` gradúa la densidad: "dense" para la contratapa (9 signos de
+//  alarma), "media" para la cara interna, "normal" si sobra lugar.
+type TemaSize = "normal" | "media" | "dense";
+
+const ESCALA: Record<
+  TemaSize,
+  { badge: string; titulo: string; texto: string; gap: string; icono: string }
+> = {
+  normal: {
+    badge: "h-[50px] w-[50px]",
+    titulo: "text-[13px]",
+    texto: "text-[11.6px] leading-[1.4]",
+    gap: "gap-[7px]",
+    icono: "h-[16px] w-[16px]",
+  },
+  media: {
+    badge: "h-[46px] w-[46px]",
+    titulo: "text-[12.5px]",
+    texto: "text-[11px] leading-[1.38]",
+    gap: "gap-[5px]",
+    icono: "h-[16px] w-[16px]",
+  },
+  dense: {
+    badge: "h-[42px] w-[42px]",
+    titulo: "text-[12px]",
+    texto: "text-[10.2px] leading-[1.34]",
+    gap: "gap-[4px]",
+    icono: "h-[15px] w-[15px]",
+  },
+};
+
 function Tema({
   t,
-  dense = false,
+  size = "normal",
   grow = false,
   tinte = 0,
 }: {
   t: Tarjeta;
-  dense?: boolean;
+  size?: TemaSize;
   grow?: boolean;
   tinte?: number;
 }) {
+  const e = ESCALA[size];
   // Tarjeta suave por tema (como el póster de ejemplo), en tintes celestes
   const TINTES = ["bg-white/80", "bg-[#EAF5FF]/85", "bg-[#F4FAFF]/90"];
   return (
@@ -254,16 +308,12 @@ function Tema({
     >
       <div className="flex flex-col items-center">
         <span
-          className={`grid place-items-center rounded-full bg-sky p-[6px] ring-[3px] ring-white outline outline-1 outline-marca/25 ${
-            dense ? "h-[42px] w-[42px]" : "h-[50px] w-[50px]"
-          }`}
+          className={`grid place-items-center rounded-full bg-sky p-[6px] ring-[3px] ring-white outline outline-1 outline-marca/25 ${e.badge}`}
         >
           <TemaIcono id={t.id} className="h-full w-full" />
         </span>
         <h3
-          className={`mt-1 text-center font-display font-bold uppercase leading-tight tracking-[0.03em] text-marca ${
-            dense ? "text-[12px]" : "text-[13px]"
-          }`}
+          className={`mt-1 text-center font-display font-bold uppercase leading-tight tracking-[0.03em] text-marca ${e.titulo}`}
         >
           {t.titulo}
         </h3>
@@ -271,22 +321,14 @@ function Tema({
       </div>
       <ul
         className={`mt-2 ${
-          grow
-            ? "flex flex-1 flex-col justify-around"
-            : `grid ${dense ? "gap-[4px]" : "gap-[7px]"}`
+          grow && t.puntos.length > 1
+            ? `flex flex-1 flex-col justify-around`
+            : `grid ${e.gap}`
         }`}
       >
         {t.puntos.map((p, i) => (
-          <li
-            key={i}
-            className={`flex gap-1.5 ${
-              dense ? "text-[10.2px] leading-[1.34]" : "text-[11.6px] leading-[1.4]"
-            } text-[#44515F]`}
-          >
-            <PuntoIcono
-              icon={p.icon}
-              className={`mt-[0.5px] shrink-0 ${dense ? "h-[15px] w-[15px]" : "h-[16px] w-[16px]"}`}
-            />
+          <li key={i} className={`flex gap-1.5 ${e.texto} text-[#44515F]`}>
+            <PuntoIcono icon={p.icon} className={`mt-[0.5px] shrink-0 ${e.icono}`} />
             <span>
               <strong className="font-bold text-marca">{p.titulo}.</strong>{" "}
               {p.texto}
@@ -451,7 +493,7 @@ export default async function HojaPage() {
             </p>
           </div>
           <div className="mt-2">
-            <Tema t={byId["alarma"]} dense tinte={0} />
+            <Tema t={byId["alarma"]} size="dense" tinte={0} />
           </div>
 
           {/* QR */}
@@ -556,38 +598,12 @@ export default async function HojaPage() {
           {/* ── Panal hexagonal, calcado de la pared de la entrada ──
               La foto va dentro del hexágono grande; alrededor, las piezas
               con los valores institucionales y los marcos dorados. */}
-          <div className="relative mx-auto mt-3 h-[92mm] w-[80mm]">
-            {/* marcos dorados vacíos */}
-            <Hex w={13} x={2} y={0} stroke={DORADO} />
-            <Hex w={12} x={2} y={66} stroke={DORADO} />
-            <Hex w={15} x={63} y={68} stroke={DORADO} />
-
-            {/* piezas claras de relleno */}
-            <Hex w={10} x={36} y={0} fill="rgba(255,255,255,.18)" />
-            <Hex w={11} x={13} y={79} fill="rgba(255,255,255,.22)" />
-
-            {/* foto de mamá + bebé, recortada en hexágono */}
-            <div
-              className="absolute"
-              style={{ left: "2mm", top: "14mm", width: "44mm", height: `${44 * 1.1547}mm` }}
-            >
-              <div
-                className="h-full w-full p-[1.1mm]"
-                style={{ clipPath: HEX_CLIP, background: "rgba(255,255,255,.85)" }}
-              >
-                <img
-                  src="/tapa-mama-bebe.jpg"
-                  alt="Mamá sosteniendo a su bebé"
-                  className="h-full w-full object-cover object-top"
-                  style={{ clipPath: HEX_CLIP }}
-                />
-              </div>
+          <div className="relative mt-3 rounded-2xl bg-[#31363B] px-[3mm] py-[4mm] shadow-lg ring-1 ring-white/10">
+            <div className="relative mx-auto h-[83mm] w-[77mm]">
+              {PANAL.map((c) => (
+                <Hex key={`${c.col}-${c.fila}`} celda={c} />
+              ))}
             </div>
-
-            {/* valores institucionales */}
-            <Hex w={25} x={52} y={4} fill="#FFFFFF" label="Excelencia" labelSize={7} />
-            <Hex w={27} x={50} y={35} fill="#FFFFFF" label="Compromiso" labelSize={7} />
-            <Hex w={21} x={26} y={66} fill="#8ECAE6" label="Calidad" labelSize={7} />
           </div>
 
           <div className="relative mt-3 text-center">
@@ -613,25 +629,25 @@ export default async function HojaPage() {
       </p>
       <div className="trifold trifold-zoom rounded-2xl shadow-soft">
         {/* Columna 1 */}
-        <div className="panel flex flex-col justify-between gap-[2mm] p-[4mm]">
+        <div className="panel flex flex-col gap-[2.5mm] p-[4mm]">
           <Fondo variante={0} />
-          <Tema t={byId["alimentacion"]} dense tinte={0} />
-          <Tema t={byId["vinculo"]} dense tinte={1} />
-          <Tema t={byId["eliminacion"]} dense tinte={2} />
+          <Tema t={byId["alimentacion"]} size="media" tinte={0} />
+          <Tema t={byId["vinculo"]} size="media" tinte={1} />
+          <Tema t={byId["eliminacion"]} size="media" tinte={2} />
         </div>
         {/* Columna 2 */}
-        <div className="panel flex flex-col justify-between gap-[2mm] bg-[#F7FBFF] p-[4mm]">
+        <div className="panel flex flex-col gap-[2.5mm] bg-[#F7FBFF] p-[4mm]">
           <Fondo variante={1} />
-          <Tema t={byId["sueno"]} dense tinte={1} />
-          <Tema t={byId["llanto"]} dense tinte={2} />
-          <Tema t={byId["vestimenta"]} dense tinte={0} />
+          <Tema t={byId["sueno"]} size="media" tinte={1} />
+          <Tema t={byId["llanto"]} size="media" tinte={2} />
+          <Tema t={byId["vestimenta"]} size="media" tinte={0} />
         </div>
         {/* Columna 3 */}
-        <div className="panel flex flex-col justify-between gap-[2mm] p-[4mm]">
+        <div className="panel flex flex-col gap-[2.5mm] p-[4mm]">
           <Fondo variante={2} />
-          <Tema t={byId["bano-cordon"]} dense tinte={2} />
-          <Tema t={byId["acompanar-mama"]} dense tinte={0} />
-          <Tema t={byId["control"]} dense tinte={1} />
+          <Tema t={byId["bano-cordon"]} size="media" grow tinte={2} />
+          <Tema t={byId["acompanar-mama"]} size="media" grow tinte={0} />
+          <Tema t={byId["control"]} size="media" tinte={1} />
         </div>
       </div>
     </div>
