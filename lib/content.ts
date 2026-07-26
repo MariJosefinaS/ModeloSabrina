@@ -110,7 +110,8 @@ export const tarjetas: Tarjeta[] = [
       {
         icon: "💩",
         titulo: "El meconio",
-        texto: "La primera caca es pegajosa y de color negro verdoso.",
+        // La médica agregó el cambio de color con la bajada de la leche.
+        texto: "La primera caca es pegajosa y de color negro verdoso. Con la bajada de la leche materna cambia de color y se vuelve amarillenta.",
       },
     ],
   },
@@ -256,13 +257,15 @@ export const tarjetas: Tarjeta[] = [
     id: "control",
     emoji: "🩺",
     titulo: "Control del bebé sano",
-    clave: "Primer control: 3.º a 7.º día",
-    resumen: "El primer control se hace entre el 3.º y el 7.º día de vida.",
+    clave: "Primera semana de vida",
+    resumen: "El primer control se hace en la primera semana de vida.",
     color: "sunshine",
     puntos: [
       {
         icon: "📅",
-        titulo: "Primer control",
+        // La médica pidió que el encabezado diga "Primera semana de vida" y
+        // que el detalle (3.º a 7.º día) quede abajo.
+        titulo: "Primera semana de vida",
         texto: "Debe hacerse entre el 3.º y el 7.º día de vida, o cuando lo indique tu pediatra.",
       },
     ],

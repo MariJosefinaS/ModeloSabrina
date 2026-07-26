@@ -498,7 +498,7 @@ export default async function HojaPage() {
             <img
               src="/panal-pared.png"
               alt="Instalación hexagonal de la entrada del sanatorio: excelencia, calidad y compromiso"
-              className="w-[89mm] max-h-full object-contain"
+              className="w-[93mm] max-h-full object-contain"
             />
           </div>
 

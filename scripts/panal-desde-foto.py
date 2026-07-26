@@ -65,7 +65,11 @@ PIEZAS = [
     dict(cx=159, cy=580, w=169, hueco=(144, 588, 120)),   # marco chico izq
     dict(cx=653, cy=891, w=256, hueco=(655, 898, 214)),   # marco abajo
     dict(cx=1026, cy=801, w=130),                         # greige chico abajo
-    dict(cx=1268, cy=715, w=256, foto="bebe"),            # (era paciente)
+    # El stakeholder pidió las fotos más grandes. De las tres, ésta es la
+    # única que puede crecer: "mama" (400) y "descanso" (345) ya tocan a sus
+    # vecinos, así que están al máximo. El tope acá es 354 px antes de pisar
+    # al vecino (medido con SAT); se deja 336 para conservar la separación.
+    dict(cx=1268, cy=715, w=336, foto="bebe"),            # (era paciente)
 ]
 
 # Fotos que van adentro de los hexágonos. La pared muestra escenas
