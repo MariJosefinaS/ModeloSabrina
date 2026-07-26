@@ -30,3 +30,6 @@ next-env.d.ts
 
 # demo data (local fallback store)
 /.data/
+
+.vercel
+.env*
