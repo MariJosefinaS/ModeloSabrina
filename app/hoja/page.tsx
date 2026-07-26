@@ -3,7 +3,13 @@ import QRCode from "qrcode";
 import PrintButton from "@/components/PrintButton";
 import TemaIcono from "@/components/TemaIcono";
 import PuntoIcono from "@/components/PuntoIcono";
-import { identificacion, tarjetas, type Tarjeta } from "@/lib/content";
+import {
+  DISCLAIMER,
+  GENERALIDADES,
+  identificacion,
+  tarjetas,
+  type Tarjeta,
+} from "@/lib/content";
 import { SITE } from "@/lib/site";
 
 export const metadata = {
@@ -314,64 +320,41 @@ export default async function HojaPage() {
         </p>
       </div>
 
-      {/* ════════ CARA EXTERNA (contratapa + flap + tapa) ════════ */}
+      {/* ══════════════════════════════════════════════════════════════
+          ORDEN DE LECTURA que pidió el stakeholder (video de la maqueta
+          de papel, Ejemplos/_transcribe/v0725.txt + frames0725):
+
+            1 Presentación (TAPA)
+            2 Identificación del RN (huella y datos)  ← al abrir la tapa
+            3 Alimentación · Vínculo y apego · Eliminación
+            4 Sueño seguro · El llanto · Vestimenta y temperatura
+            5 Baño, uñas y cordón · Acompañar a mamá · Control del bebé sano
+            6 Signos de alarma · Contactos · QR
+
+          Plegado tipo carta: se pliega el tercio DERECHO hacia adentro y
+          después el IZQUIERDO encima. Por eso el tercio izquierdo de la
+          cara interna es el dorso de la tapa (panel 2) y el izquierdo de
+          la externa es la solapa que queda escondida (panel 5).
+
+            CARA EXTERNA  [5 solapa][6 contratapa][1 TAPA]
+            CARA INTERNA  [2 identif.][3 alim/vínculo/elim][4 sueño/llanto/vest]
+          ══════════════════════════════════════════════════════════════ */}
+
+      {/* ════════ CARA EXTERNA (solapa + contratapa + tapa) ════════ */}
       <p className="no-print mx-auto mb-1 max-w-4xl px-4 text-xs font-bold uppercase tracking-wide text-marca/70">
         Cara externa
       </p>
       <div className="trifold trifold-zoom page-break rounded-2xl shadow-soft">
-        {/* SOLAPA (izquierda, se pliega hacia adentro y queda detrás de la
-            tapa): ficha de identificación del recién nacido. */}
-        <div className="panel flex flex-col bg-[#F7FBFF] p-[6mm]">
+        {/* SOLAPA (izquierda): es el tercio que se pliega hacia adentro, así
+            que en el orden de lectura es el PANEL 5 → baño/uñas/cordón,
+            acompañar a mamá y control del bebé sano. Al abrir la tapa queda
+            a la derecha de la ficha de identificación (tal cual la maqueta
+            de papel del stakeholder, frames f_003/f_004). */}
+        <div className="panel flex flex-col gap-[2.5mm] bg-[#F7FBFF] p-[4mm]">
           <Fondo variante={2} />
-
-          <div className="relative flex flex-col items-center">
-            <span className="grid h-[50px] w-[50px] place-items-center rounded-full bg-sky p-[9px] ring-[3px] ring-white outline outline-1 outline-marca/25">
-              <Huellita className="h-full w-full" />
-            </span>
-            <h3 className="mt-1.5 text-center font-display text-[14px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
-              {identificacion.titulo}
-            </h3>
-            <span className="mt-[3px] h-[3px] w-9 rounded-full bg-sky" />
-          </div>
-
-          {/* Datos del bebé, para completar a mano */}
-          <div className="relative mt-4 grid gap-[3.5mm]">
-            {identificacion.filas.map((fila, i) => (
-              <div key={i} className="flex items-baseline gap-3">
-                {fila.map((c) => (
-                  <Campo
-                    key={c.etiqueta}
-                    etiqueta={c.etiqueta}
-                    ancho={c.ancho}
-                    sufijo={c.sufijo}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-
-          {/* Huella del pie */}
-          <div className="relative mt-4 flex flex-1 flex-col rounded-2xl border-2 border-dashed border-marca/30 bg-white/70 p-2">
-            <p className="text-center font-display text-[10.5px] font-bold uppercase tracking-[0.05em] text-marca/70">
-              {identificacion.huella}
-            </p>
-            <div className="grid flex-1 place-items-center">
-              <Huellita className="h-[26mm] w-[26mm] opacity-[0.09]" />
-            </div>
-          </div>
-
-          {/* Equipo de salud */}
-          <div className="relative mt-4">
-            <p className="font-display text-[11.5px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
-              {identificacion.equipoTitulo}
-            </p>
-            <span className="mt-[3px] block h-[3px] w-9 rounded-full bg-sky" />
-            <div className="mt-2.5 grid gap-[3.5mm]">
-              {identificacion.equipo.map((rol) => (
-                <Campo key={rol} etiqueta={rol} ancho="full" />
-              ))}
-            </div>
-          </div>
+          <Tema t={byId["bano-cordon"]} size="media" grow tinte={2} />
+          <Tema t={byId["acompanar-mama"]} size="media" grow tinte={0} />
+          <Tema t={byId["control"]} size="media" tinte={1} />
         </div>
 
         {/* CONTRATAPA (centro): signos de alarma + contacto + QR */}
@@ -461,11 +444,14 @@ export default async function HojaPage() {
             </ul>
           </div>
 
-          <p className="mt-auto border-t border-marca/10 pt-1.5 text-[7.6px] leading-tight text-[#6B7783]">
-            Información orientativa para acompañarte durante la internación. No
-            reemplaza el consejo de tu equipo de salud. Ante cualquier duda,
-            preguntá al personal de enfermería o a tu pediatra.
-          </p>
+          <div className="mt-auto">
+            <p className="text-balance rounded-lg border border-dashed border-marca/35 bg-white/70 px-2 py-[3px] text-center font-display text-[8.2px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
+              {GENERALIDADES}
+            </p>
+            <p className="mt-1.5 border-t border-marca/10 pt-1.5 text-[7.6px] leading-tight text-[#6B7783]">
+              {DISCLAIMER}
+            </p>
+          </div>
         </div>
 
         {/* TAPA (derecha): logo + 80 años + foto + título */}
@@ -537,26 +523,76 @@ export default async function HojaPage() {
         Cara interna
       </p>
       <div className="trifold trifold-zoom rounded-2xl shadow-soft">
-        {/* Columna 1 */}
-        <div className="panel flex flex-col gap-[2.5mm] p-[4mm]">
+        {/* PANEL 2 — Identificación del recién nacido. Va al dorso de la tapa
+            (el tercio izquierdo de la cara interna es la espalda del tercio
+            derecho de la externa), así que es lo primero que aparece al
+            abrir la portada: la huella y los datos del bebé. */}
+        <div className="panel flex flex-col p-[6mm]">
+          <Fondo variante={2} />
+
+          <div className="relative flex flex-col items-center">
+            <span className="grid h-[50px] w-[50px] place-items-center rounded-full bg-sky p-[9px] ring-[3px] ring-white outline outline-1 outline-marca/25">
+              <Huellita className="h-full w-full" />
+            </span>
+            <h3 className="mt-1.5 text-center font-display text-[14px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
+              {identificacion.titulo}
+            </h3>
+            <span className="mt-[3px] h-[3px] w-9 rounded-full bg-sky" />
+          </div>
+
+          {/* Datos del bebé, para completar a mano */}
+          <div className="relative mt-4 grid gap-[3.5mm]">
+            {identificacion.filas.map((fila, i) => (
+              <div key={i} className="flex items-baseline gap-3">
+                {fila.map((c) => (
+                  <Campo
+                    key={c.etiqueta}
+                    etiqueta={c.etiqueta}
+                    ancho={c.ancho}
+                    sufijo={c.sufijo}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Huella del pie */}
+          <div className="relative mt-4 flex flex-1 flex-col rounded-2xl border-2 border-dashed border-marca/30 bg-white/70 p-2">
+            <p className="text-center font-display text-[10.5px] font-bold uppercase tracking-[0.05em] text-marca/70">
+              {identificacion.huella}
+            </p>
+            <div className="grid flex-1 place-items-center">
+              <Huellita className="h-[26mm] w-[26mm] opacity-[0.09]" />
+            </div>
+          </div>
+
+          {/* Equipo de salud */}
+          <div className="relative mt-4">
+            <p className="font-display text-[11.5px] font-bold uppercase leading-tight tracking-[0.03em] text-marca">
+              {identificacion.equipoTitulo}
+            </p>
+            <span className="mt-[3px] block h-[3px] w-9 rounded-full bg-sky" />
+            <div className="mt-2.5 grid gap-[3.5mm]">
+              {identificacion.equipo.map((rol) => (
+                <Campo key={rol} etiqueta={rol} ancho="full" />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* PANEL 3 */}
+        <div className="panel flex flex-col gap-[2.5mm] bg-[#F7FBFF] p-[4mm]">
           <Fondo variante={0} />
           <Tema t={byId["alimentacion"]} size="media" tinte={0} />
-          <Tema t={byId["vinculo"]} size="media" tinte={1} />
-          <Tema t={byId["eliminacion"]} size="media" tinte={2} />
+          <Tema t={byId["vinculo"]} size="media" grow tinte={1} />
+          <Tema t={byId["eliminacion"]} size="media" grow tinte={2} />
         </div>
-        {/* Columna 2 */}
-        <div className="panel flex flex-col gap-[2.5mm] bg-[#F7FBFF] p-[4mm]">
+        {/* PANEL 4 */}
+        <div className="panel flex flex-col gap-[2.5mm] p-[4mm]">
           <Fondo variante={1} />
           <Tema t={byId["sueno"]} size="media" tinte={1} />
           <Tema t={byId["llanto"]} size="media" tinte={2} />
           <Tema t={byId["vestimenta"]} size="media" tinte={0} />
-        </div>
-        {/* Columna 3 */}
-        <div className="panel flex flex-col gap-[2.5mm] p-[4mm]">
-          <Fondo variante={2} />
-          <Tema t={byId["bano-cordon"]} size="media" grow tinte={2} />
-          <Tema t={byId["acompanar-mama"]} size="media" grow tinte={0} />
-          <Tema t={byId["control"]} size="media" tinte={1} />
         </div>
       </div>
     </div>

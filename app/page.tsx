@@ -3,7 +3,7 @@ import Decor from "@/components/Decor";
 import SiteHeader from "@/components/SiteHeader";
 import BabyMascot from "@/components/BabyMascot";
 import PosterClient from "@/components/PosterClient";
-import { tarjetas, DISCLAIMER } from "@/lib/content";
+import { tarjetas, DISCLAIMER, GENERALIDADES } from "@/lib/content";
 import { SITE } from "@/lib/site";
 
 export default function Home() {
@@ -52,7 +52,10 @@ export default function Home() {
         </div>
 
         {/* ── Aviso breve ── */}
-        <p className="mx-auto mt-8 max-w-2xl text-center text-xs text-cocoa/55">
+        <p className="text-balance mx-auto mt-8 max-w-2xl rounded-2xl border border-dashed border-marca/35 bg-white/70 px-4 py-2 text-center font-display text-xs font-bold uppercase tracking-wide text-marca">
+          {GENERALIDADES}
+        </p>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-xs text-cocoa/55">
           ⚠️ {DISCLAIMER}
         </p>
       </section>

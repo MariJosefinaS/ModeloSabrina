@@ -89,7 +89,10 @@ export const tarjetas: Tarjeta[] = [
   {
     id: "eliminacion",
     emoji: "💧",
-    titulo: "Eliminación",
+    // El Word lo titula "Eliminación"; el usuario pidió llamarlo "Pañales"
+    // (se entiende mucho mejor, como en el póster COPAP). El contenido no
+    // cambia. El id se mantiene para no romper referencias.
+    titulo: "Pañales",
     clave: "6 a 8 pañales por día",
     resumen: "Al menos una de pis y una de caca en la internación; desde el 3.º día, 6 a 8 pañales.",
     color: "skysoft",
@@ -383,3 +386,8 @@ export const fuentes: Fuente[] = [
 
 export const DISCLAIMER =
   "Información orientativa para acompañarte durante la internación. No reemplaza el consejo de tu equipo de salud. Ante cualquier duda, preguntá al personal de enfermería o a tu pediatra.";
+
+// Pie que pidió el usuario a partir del póster "Recién nacido · COPAP"
+// (Dra. Fer Antúnez), Ejemplos/WhatsApp Image 2026-07-26 at 13.34.55.jpeg.
+export const GENERALIDADES =
+  "Todo lo anterior son generalidades y puede variar según cada bebé";
