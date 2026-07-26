@@ -1,8 +1,8 @@
 """Recorta una foto en forma de hexágono con fondo transparente, para el
 panal de la tapa del tríptico (`app/hoja/page.tsx`).
 
-Los hexágonos de la pared de la entrada del sanatorio son de LADO PLANO
-ARRIBA (puntas a izquierda y derecha), así que ese es el default.
+Los hexágonos de la pared de la entrada del sanatorio son PUNTA ARRIBA
+(vértice arriba y abajo, lados izquierdo y derecho rectos).
 
 Se recorta acá y no con CSS/SVG para no depender de que el motor de
 impresión respete un clip-path.
@@ -29,9 +29,9 @@ ZOOM = float(sys.argv[3]) if len(sys.argv) > 3 else 1.0
 CX = float(sys.argv[4]) if len(sys.argv) > 4 else 0.5
 ORIGEN = sys.argv[5] if len(sys.argv) > 5 else "public/tapa-mama-bebe.jpg"
 
-# Hexágono de lado plano arriba: alto = ancho × √3/2
+# Hexágono punta arriba: alto = ancho × 2/√3
 W = 760  # se imprime a ~34 mm; sobra para 300+ dpi
-H = round(W * 0.8660)
+H = round(W * 1.1547)
 SS = 4  # supersampling, para que los bordes no queden dentados
 
 src = Image.open(ORIGEN).convert("RGB")
@@ -45,16 +45,16 @@ left = min(max(round(nw * CX - W / 2), 0), nw - W)
 top = min(max(round(nh * CY - H / 2), 0), nh - H)
 img = img.crop((left, top, left + W, top + H))
 
-# máscara hexagonal (lado plano arriba)
+# máscara hexagonal (punta arriba)
 mascara = Image.new("L", (W * SS, H * SS), 0)
 ImageDraw.Draw(mascara).polygon(
     [
-        (0.25 * W * SS, 0),
-        (0.75 * W * SS, 0),
-        (1.00 * W * SS, 0.50 * H * SS),
-        (0.75 * W * SS, 1.00 * H * SS),
-        (0.25 * W * SS, 1.00 * H * SS),
-        (0.00 * W * SS, 0.50 * H * SS),
+        (0.50 * W * SS, 0),
+        (1.00 * W * SS, 0.25 * H * SS),
+        (1.00 * W * SS, 0.75 * H * SS),
+        (0.50 * W * SS, 1.00 * H * SS),
+        (0.00 * W * SS, 0.75 * H * SS),
+        (0.00 * W * SS, 0.25 * H * SS),
     ],
     fill=255,
 )

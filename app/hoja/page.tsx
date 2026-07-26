@@ -16,96 +16,6 @@ const byId = Object.fromEntries(tarjetas.map((t) => [t.id, t])) as Record<
 >;
 
 const AZUL = "#0056A2";
-// Dorado de los marcos hexagonales de la pared de entrada del sanatorio.
-const DORADO = "#C9A961";
-
-// ── Panal hexagonal de la entrada del sanatorio ────────────────
-//  Calcado de `Ejemplos/WhatsApp Image 2026-07-25 at 14.36.01.jpeg`.
-//  Tres cosas que definen ese panal y hay que respetar:
-//   1. los hexágonos son de LADO PLANO ARRIBA (puntas a izq. y der.),
-//   2. los TAMAÑOS VARÍAN mucho (uno grande con foto, otro grande de
-//      contorno dorado, medianos con los valores, chicos de relleno),
-//   3. es un RACIMO ORGÁNICO irregular, no una grilla prolija, y va
-//      suelto sobre el fondo (sin ningún panel detrás).
-const HEX_PTS = "25,0 75,0 100,50 75,100 25,100 0,50";
-
-const GRIS = "#DDE3E8";
-// Azul más profundo que el del fondo, si no la pieza no se despega.
-const AZUL_PIEZA = "#00427C";
-
-type Celda = {
-  /** ancho en mm (el alto sale solo: ancho × 0.866) */
-  w: number;
-  /** posición dentro del racimo, en mm */
-  x: number;
-  y: number;
-  tipo: "azul" | "gris" | "marco" | "foto";
-  label?: string;
-  /** qué recorte de foto usar */
-  foto?: 1 | 2;
-};
-
-function Hex({ celda }: { celda: Celda }) {
-  const { w, x, y, tipo, label, foto } = celda;
-  const style: React.CSSProperties = {
-    left: `${x}mm`,
-    top: `${y}mm`,
-    width: `${w}mm`,
-    height: `${w * 0.866}mm`,
-  };
-
-  if (tipo === "foto") {
-    // Las fotos vienen YA recortadas en hexágono con transparencia
-    // (scripts/hexagonar-foto.py): así el recorte no depende de que el
-    // motor de impresión respete un clip-path.
-    // ⚠️ Si se cambia la foto de tapa hay que regenerar esos PNG.
-    return (
-      <div className="absolute" style={style}>
-        <img src={`/tapa-hex-${foto ?? 1}.png`} alt="" className="h-full w-full" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="absolute" style={style}>
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
-        <polygon
-          points={HEX_PTS}
-          fill={tipo === "azul" ? AZUL_PIEZA : tipo === "gris" ? GRIS : "none"}
-          stroke={tipo === "marco" ? DORADO : "none"}
-          strokeWidth={tipo === "marco" ? 3.2 : 0}
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
-      {label && (
-        <span
-          className="absolute inset-0 grid place-items-center px-[3mm] text-center font-display text-[7px] font-bold uppercase leading-none text-white"
-          style={{ letterSpacing: "0.08em" }}
-        >
-          {label}
-        </span>
-      )}
-    </div>
-  );
-}
-
-// El racimo, calcado de la disposición de la pared: las piezas se tocan
-// o casi (en la pared están pegadas), con tamaños bien distintos.
-// Canvas 85 × 78 mm.
-const PANAL: Celda[] = [
-  { w: 23, x: 2, y: 2, tipo: "marco" },
-  { w: 27, x: 3, y: 21, tipo: "azul", label: "Excelencia" },
-  { w: 13, x: 0, y: 45, tipo: "gris" },
-  { w: 22, x: 7, y: 51, tipo: "azul", label: "Calidad" },
-  { w: 32, x: 24, y: 7, tipo: "foto", foto: 1 },
-  { w: 25, x: 26, y: 38, tipo: "foto", foto: 2 },
-  { w: 16, x: 41, y: 61, tipo: "marco" },
-  { w: 17, x: 52, y: 1, tipo: "azul" },
-  { w: 12, x: 70, y: 0, tipo: "marco" },
-  { w: 15, x: 68, y: 15, tipo: "gris" },
-  { w: 31, x: 50, y: 28, tipo: "marco", label: "Compromiso" },
-];
 
 // ── Ambientación: formas orgánicas y hojitas de fondo, como en la
 //    infografía del sanatorio. Van detrás del contenido, muy tenues.
@@ -592,18 +502,18 @@ export default async function HojaPage() {
             </div>
           </div>
 
-          {/* ── Panal hexagonal, calcado de la pared de la entrada ──
-              La foto va dentro del hexágono grande; alrededor, las piezas
-              con los valores institucionales y los marcos dorados. */}
-          {/* Racimo hexagonal, suelto sobre el azul (sin panel detrás).
-              Crece para absorber el sobrante: si no, el título quedaba
-              flotando en el medio con un hueco muerto abajo. */}
+          {/* ── Panal hexagonal: es la FOTO REAL de la instalación de la
+              entrada del sanatorio, enderezada y recortada con fondo
+              transparente (scripts/panal-desde-foto.py → panal-pared.png).
+              Se dibujó 4 veces con vectores y el sanatorio las rechazó
+              todas, así que va la pieza real. Crece para absorber el
+              sobrante: si no, el título quedaba flotando en el medio. */}
           <div className="relative mt-2 flex flex-1 items-center justify-center">
-            <div className="relative h-[78mm] w-[85mm]">
-              {PANAL.map((c, i) => (
-                <Hex key={i} celda={c} />
-              ))}
-            </div>
+            <img
+              src="/panal-pared.png"
+              alt="Instalación hexagonal de la entrada del sanatorio: excelencia, calidad y compromiso"
+              className="w-[89mm] max-h-full object-contain"
+            />
           </div>
 
           <div className="relative mt-3 text-center">
