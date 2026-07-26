@@ -33,3 +33,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# candidatas de fotos que bajé para elegir (no las usa el proyecto)
+Ejemplos/fotos-tapa/candidatas*/

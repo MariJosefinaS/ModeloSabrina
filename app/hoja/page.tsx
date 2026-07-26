@@ -498,7 +498,14 @@ export default async function HojaPage() {
             <img
               src="/panal-pared.png"
               alt="Instalación hexagonal de la entrada del sanatorio: excelencia, calidad y compromiso"
-              className="w-[93mm] max-h-full object-contain"
+              /* 93 mm: el panel mide 99, así quedan 3 mm de margen por lado.
+                 `max-w-none` es imprescindible — el preflight de Tailwind
+                 pone `img { max-width: 100% }` y eso capaba la imagen al
+                 ancho del contenido del panel (85 mm = 99 − 7 − 7 de
+                 padding), ignorando el w-[..mm]. `shrink-0` evita que el
+                 flex la vuelva a encoger; `max-h-full` es la red de
+                 seguridad por si el hueco vertical no alcanza. */
+              className="w-[93mm] max-h-full max-w-none shrink-0 object-contain"
             />
           </div>
 
