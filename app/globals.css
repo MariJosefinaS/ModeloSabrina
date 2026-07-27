@@ -5,6 +5,17 @@
 :root {
   --font-fredoka: "Fredoka", system-ui, sans-serif;
   --font-nunito: "Nunito", system-ui, sans-serif;
+
+  /* Declarar el esquema es lo que evita que el navegador AUTO-INVIERTA la
+     página (Chrome Android "tema oscuro automático", Samsung Internet,
+     extensiones): con la inversión automática las ilustraciones salían
+     apagadas y el azul institucional se perdía. Acá abajo el modo oscuro es
+     propio y diseñado, no una inversión. */
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
 }
 
 @layer base {
@@ -15,6 +26,14 @@
       radial-gradient(50rem 50rem at 110% 0%, #8ECAE644, transparent),
       radial-gradient(70rem 60rem at 50% 120%, #E4F2FF66, transparent);
     background-attachment: fixed;
+  }
+  /* Noche: el mismo azul institucional bajado de luz, no un gris neutro. */
+  .dark body {
+    @apply bg-noche text-tinta;
+    background-image:
+      radial-gradient(60rem 60rem at 10% -10%, #0B3F7099, transparent),
+      radial-gradient(50rem 50rem at 110% 0%, #0056A255, transparent),
+      radial-gradient(70rem 60rem at 50% 120%, #10395E88, transparent);
   }
   h1, h2, h3 {
     @apply font-display;
@@ -108,6 +127,22 @@
   outline: 3px dashed #0056A2;
   outline-offset: 3px;
   border-radius: 1rem;
+}
+.dark .focus-cute:focus-visible {
+  outline-color: #7FB6E0;
+}
+
+/* ── El tríptico va SIEMPRE en claro ─────────────────────────
+   /hoja es la vista de lo que se imprime en papel: si se oscureciera
+   dejaría de mostrar lo que sale de la impresora. Se le devuelve el
+   lienzo claro aunque el resto del sitio esté en modo noche. */
+.tema-claro {
+  color-scheme: light;
+  color: #6B4F4F;
+  background-color: #FFF9F3;
+  background-image:
+    radial-gradient(60rem 60rem at 10% -10%, #BFE3FF55, transparent),
+    radial-gradient(50rem 50rem at 110% 0%, #8ECAE644, transparent);
 }
 
 /* ── Fondo animado (menos formal, más vivo) ─────────────────── */

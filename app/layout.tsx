@@ -24,10 +24,25 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFF9F3",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFF9F3" },
+    { media: "(prefers-color-scheme: dark)", color: "#071A2E" },
+  ],
+  colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
 };
+
+// Se ejecuta antes de pintar para que la página no arranque en claro y salte
+// a oscuro. Sigue al navegador salvo que haya una elección guardada.
+const TEMA_INICIAL = `
+try {
+  var t = localStorage.getItem("tema");
+  var oscuro = t ? t === "oscuro"
+                 : matchMedia("(prefers-color-scheme: dark)").matches;
+  if (oscuro) document.documentElement.classList.add("dark");
+} catch (e) {}
+`;
 
 export default function RootLayout({
   children,
@@ -36,6 +51,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${fredoka.variable} ${nunito.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: TEMA_INICIAL }} />
+      </head>
       <body>{children}</body>
     </html>
   );

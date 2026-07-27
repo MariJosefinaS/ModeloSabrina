@@ -19,13 +19,13 @@ export default function Home() {
             <BabyMascot className="w-full drop-shadow-[0_18px_25px_rgba(131,103,199,0.3)]" />
           </div>
           <div className="reveal">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-marca shadow-soft ring-1 ring-white">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-marca shadow-soft ring-1 ring-white dark:bg-panel dark:text-acento dark:ring-borde">
               🍼 {SITE.programa} · {SITE.institucion}
             </span>
-            <h1 className="mt-2 font-display text-3xl leading-tight text-cocoa md:text-5xl">
+            <h1 className="mt-2 font-display text-3xl leading-tight text-cocoa dark:text-tinta md:text-5xl">
               Cuidados de tu bebé
             </h1>
-            <p className="mt-1 max-w-md text-cocoa/75">
+            <p className="mt-1 max-w-md text-cocoa/75 dark:text-tinta2">
               Todo lo que podés hacer mientras están juntos, acá. Tocá una
               tarjeta para ver el paso a paso. 💙
             </p>
@@ -39,44 +39,45 @@ export default function Home() {
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/hoja"
-            className="focus-cute rounded-full bg-marca px-6 py-3 font-display text-lg text-white shadow-soft transition hover:-translate-y-0.5 hover:brightness-110"
+            className="focus-cute rounded-full bg-marca px-6 py-3 font-display text-lg text-white shadow-soft transition hover:-translate-y-0.5 hover:brightness-110 dark:bg-marcaSoft"
           >
             🖨️ Imprimir el tríptico para llevar
           </Link>
           <Link
             href="/foro"
-            className="focus-cute rounded-full bg-white px-5 py-3 font-semibold text-marca shadow-soft ring-1 ring-white transition hover:-translate-y-0.5"
+            className="focus-cute rounded-full bg-white px-5 py-3 font-semibold text-marca shadow-soft ring-1 ring-white transition hover:-translate-y-0.5 dark:bg-panel dark:text-acento dark:ring-borde"
           >
             ¿Te quedó una duda? Consultá
           </Link>
         </div>
 
         {/* ── Aviso breve ── */}
-        <p className="text-balance mx-auto mt-8 max-w-2xl rounded-2xl border border-dashed border-marca/35 bg-white/70 px-4 py-2 text-center font-display text-xs font-bold uppercase tracking-wide text-marca">
+        <p className="text-balance mx-auto mt-8 max-w-2xl rounded-2xl border border-dashed border-marca/35 bg-white/70 px-4 py-2 text-center font-display text-xs font-bold uppercase tracking-wide text-marca dark:border-acento/40 dark:bg-panel/70 dark:text-acento">
           {GENERALIDADES}
         </p>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-xs text-cocoa/55">
+        <p className="mx-auto mt-3 max-w-2xl text-center text-xs text-cocoa/55 dark:text-tinta2/70">
           ⚠️ {DISCLAIMER}
         </p>
       </section>
 
       {/* ── Pie institucional mínimo ── */}
-      <footer className="border-t border-white/60 bg-white/60">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-2 px-4 py-6 text-center text-sm text-cocoa/70 sm:flex-row sm:justify-between sm:text-left">
+      <footer className="border-t border-white/60 bg-white/60 dark:border-borde/50 dark:bg-panel/50">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-2 px-4 py-6 text-center text-sm text-cocoa/70 dark:text-tinta2 sm:flex-row sm:justify-between sm:text-left">
           <div className="flex items-center gap-2">
-            <img src="/logo-sanatorio.png" alt={SITE.institucion} className="h-8 w-auto" />
+            <img src="/logo-sanatorio.png" alt={SITE.institucion} className="h-8 w-auto dark:hidden" />
+            <img src="/logo-sanatorio-white.png" alt={SITE.institucion} className="hidden h-8 w-auto dark:block" />
             <span>
               {SITE.direccion} — {SITE.ciudad}
             </span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-            <a href={SITE.whatsappHref} target="_blank" rel="noopener noreferrer" className="focus-cute font-semibold text-marca hover:underline">
+            <a href={SITE.whatsappHref} target="_blank" rel="noopener noreferrer" className="focus-cute font-semibold text-marca hover:underline dark:text-acento">
               💬 WhatsApp
             </a>
-            <a href={SITE.telefonoHref} className="focus-cute font-semibold text-marca hover:underline">
+            <a href={SITE.telefonoHref} className="focus-cute font-semibold text-marca hover:underline dark:text-acento">
               📞 {SITE.telefono}
             </a>
-            <a href={SITE.web} target="_blank" rel="noopener noreferrer" className="focus-cute font-semibold text-marca hover:underline">
+            <a href={SITE.web} target="_blank" rel="noopener noreferrer" className="focus-cute font-semibold text-marca hover:underline dark:text-acento">
               🌐 {SITE.webLabel}
             </a>
           </div>

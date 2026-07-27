@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isValidSession, ADMIN_COOKIE } from "@/lib/auth";
 import { answerConsulta } from "@/lib/store";
+import { sendRespuesta } from "@/lib/email";
 
 export async function POST(
   req: NextRequest,
@@ -24,7 +25,21 @@ export async function POST(
     if (!consulta) {
       return NextResponse.json({ ok: false, error: "Consulta no encontrada" }, { status: 404 });
     }
-    return NextResponse.json({ ok: true, consulta });
+
+    // La respuesta va por mail en los dos casos: en la privada es la ÚNICA
+    // vía, y en la pública es el aviso de que ya está publicada. Si el envío
+    // falla, la respuesta igual quedó guardada: no se pierde el trabajo.
+    let mailEnviado = false;
+    if (consulta.email) {
+      try {
+        await sendRespuesta(consulta);
+        mailEnviado = true;
+      } catch (err) {
+        console.error("No se pudo enviar la respuesta al paciente:", err);
+      }
+    }
+
+    return NextResponse.json({ ok: true, consulta, mailEnviado });
   } catch (err) {
     console.error("Error al responder:", err);
     return NextResponse.json({ ok: false, error: "No se pudo guardar la respuesta" }, { status: 500 });

@@ -1,8 +1,15 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
-import { Consulta, NuevaConsulta } from "./types";
+import { Consulta, NuevaConsulta, esPublica } from "./types";
 import { supabaseConfigured, getServerSupabase } from "./supabase";
+
+// Las consultas guardadas antes de que existieran las dos vías no tienen
+// `visibilidad`. En aquel momento el foro publicaba todo, así que se las
+// trata como públicas: es lo que la persona vio cuando escribió.
+function normalizar(c: Consulta): Consulta {
+  return { ...c, visibilidad: c.visibilidad ?? "publico" };
+}
 
 // ── Store local (modo demo, sin Supabase) ────────────────────────────────────
 const DATA_DIR = path.join(process.cwd(), ".data");
@@ -23,6 +30,7 @@ async function writeLocal(items: Consulta[]): Promise<void> {
 }
 
 // ── API pública del store ─────────────────────────────────────────────────────
+/** TODAS las consultas, públicas y privadas. Sólo para el panel admin. */
 export async function listConsultas(): Promise<Consulta[]> {
   if (supabaseConfigured()) {
     const sb = getServerSupabase();
@@ -31,10 +39,20 @@ export async function listConsultas(): Promise<Consulta[]> {
       .select("*")
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return (data as Consulta[]) ?? [];
+    return ((data as Consulta[]) ?? []).map(normalizar);
   }
   const items = await readLocal();
-  return items.sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+  return items
+    .map(normalizar)
+    .sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+}
+
+/**
+ * Sólo lo que puede verse en el foro. El filtro va acá, en el store, y no en
+ * la pantalla: así ninguna vista puede filtrar de más por descuido.
+ */
+export async function listConsultasPublicas(): Promise<Consulta[]> {
+  return (await listConsultas()).filter(esPublica);
 }
 
 export async function createConsulta(input: NuevaConsulta): Promise<Consulta> {
@@ -45,6 +63,7 @@ export async function createConsulta(input: NuevaConsulta): Promise<Consulta> {
     email: input.email?.trim() || null,
     tema: input.tema,
     mensaje: input.mensaje.trim(),
+    visibilidad: input.visibilidad,
     created_at: now,
     respuesta: null,
     respondido_at: null,
@@ -59,11 +78,12 @@ export async function createConsulta(input: NuevaConsulta): Promise<Consulta> {
         email: consulta.email,
         tema: consulta.tema,
         mensaje: consulta.mensaje,
+        visibilidad: consulta.visibilidad,
       })
       .select("*")
       .single();
     if (error) throw error;
-    return data as Consulta;
+    return normalizar(data as Consulta);
   }
 
   const items = await readLocal();
@@ -87,7 +107,7 @@ export async function answerConsulta(
       .select("*")
       .single();
     if (error) throw error;
-    return (data as Consulta) ?? null;
+    return data ? normalizar(data as Consulta) : null;
   }
 
   const items = await readLocal();
@@ -96,5 +116,5 @@ export async function answerConsulta(
   items[idx].respuesta = respuesta.trim();
   items[idx].respondido_at = now;
   await writeLocal(items);
-  return items[idx];
+  return normalizar(items[idx]);
 }

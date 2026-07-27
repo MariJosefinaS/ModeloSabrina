@@ -300,7 +300,9 @@ export default async function HojaPage() {
   });
 
   return (
-    <div className="min-h-screen py-6 print:min-h-0 print:py-0">
+    // `tema-claro`: la vista del tríptico no sigue al modo oscuro. Es lo que
+    // va a salir por la impresora, así que se muestra siempre sobre papel.
+    <div className="tema-claro min-h-screen py-6 print:min-h-0 print:py-0">
       {/* ── Controles (no se imprimen) ── */}
       <div className="no-print mx-auto mb-5 flex max-w-4xl flex-col items-center gap-2 px-4 text-center">
         <div className="flex w-full flex-wrap items-center justify-between gap-3">

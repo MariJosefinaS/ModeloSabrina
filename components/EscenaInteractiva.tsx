@@ -500,12 +500,15 @@ export default function EscenaInteractiva({ id }: { id: EscenaId }) {
   return (
     <div>
       {/* Instrucción bien visible ARRIBA de la imagen */}
-      <p className="mb-2 flex items-center justify-center gap-2 rounded-full bg-marca px-3 py-1.5 text-center text-[13px] font-bold leading-tight text-white">
+      <p className="mb-2 flex items-center justify-center gap-2 rounded-full bg-marca px-3 py-1.5 text-center text-[13px] font-bold leading-tight text-white dark:bg-marcaSoft">
         <span className="anim-bob-slow text-base">👆</span>
         Tocá los números para ver cada consejo
       </p>
 
-      <div className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-b from-[#F2F9FF] to-[#E2F0FC] ring-1 ring-sky/50">
+      {/* El lienzo de la ilustración NO se oscurece: el dibujo está trazado en
+          azul oscuro y los números de las llamadas son blancos con borde azul.
+          De noche funciona como una lámina iluminada dentro del panel. */}
+      <div className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-b from-[#F2F9FF] to-[#E2F0FC] ring-1 ring-sky/50 dark:ring-borde">
         <svg viewBox="0 0 400 320" className="w-full" role="img" aria-label={escena.titulo}>
           <Defs />
           {escena.dibujo}
@@ -592,13 +595,15 @@ export default function EscenaInteractiva({ id }: { id: EscenaId }) {
               aria-pressed={activo}
               className={`focus-cute inline-flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3 text-[13px] font-bold leading-tight transition ${
                 activo
-                  ? "bg-marca text-white shadow-soft"
-                  : "bg-white text-marca ring-1 ring-sky/60 hover:-translate-y-0.5 hover:ring-marca/50"
+                  ? "bg-marca text-white shadow-soft dark:bg-marcaSoft"
+                  : "bg-white text-marca ring-1 ring-sky/60 hover:-translate-y-0.5 hover:ring-marca/50 dark:bg-panelAlt dark:text-acento dark:ring-borde dark:hover:ring-acento/60"
               }`}
             >
               <span
                 className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-[12px] ${
-                  activo ? "bg-white/25 text-white" : "bg-skysoft/70 text-marca"
+                  activo
+                    ? "bg-white/25 text-white"
+                    : "bg-skysoft/70 text-marca dark:bg-noche/60 dark:text-acento"
                 }`}
               >
                 {i + 1}
@@ -610,21 +615,21 @@ export default function EscenaInteractiva({ id }: { id: EscenaId }) {
       </div>
 
       {/* texto del punto tocado — solo frases del documento */}
-      <div className="mt-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-sky/40">
+      <div className="mt-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-sky/40 dark:bg-panel dark:ring-borde/60">
         <div className="flex items-baseline justify-between gap-3">
-          <p className="font-display text-lg leading-tight text-marca">
+          <p className="font-display text-lg leading-tight text-marca dark:text-acento">
             {abierto + 1}. {punto.titulo}
           </p>
-          <span className="shrink-0 text-xs font-bold text-cocoa/45">
+          <span className="shrink-0 text-xs font-bold text-cocoa/45 dark:text-tinta2/60">
             {abierto + 1} de {total}
           </span>
         </div>
-        <p className="mt-1 text-sm leading-snug text-cocoa/80">{punto.texto}</p>
+        <p className="mt-1 text-sm leading-snug text-cocoa/80 dark:text-tinta2">{punto.texto}</p>
 
-        <div className="mt-3 flex items-center justify-between gap-2 border-t border-sky/40 pt-3">
+        <div className="mt-3 flex items-center justify-between gap-2 border-t border-sky/40 pt-3 dark:border-borde/60">
           <button
             onClick={() => setAbierto((abierto - 1 + total) % total)}
-            className="focus-cute rounded-full bg-skysoft/60 px-3 py-1 text-sm font-bold text-marca transition hover:bg-skysoft"
+            className="focus-cute rounded-full bg-skysoft/60 px-3 py-1 text-sm font-bold text-marca transition hover:bg-skysoft dark:bg-panelAlt dark:text-acento dark:hover:bg-borde"
           >
             ‹ Anterior
           </button>
@@ -633,14 +638,14 @@ export default function EscenaInteractiva({ id }: { id: EscenaId }) {
               <span
                 key={i}
                 className={`h-2 rounded-full transition-all ${
-                  i === abierto ? "w-5 bg-marca" : "w-2 bg-sky"
+                  i === abierto ? "w-5 bg-marca dark:bg-acento" : "w-2 bg-sky dark:bg-borde"
                 }`}
               />
             ))}
           </div>
           <button
             onClick={() => setAbierto((abierto + 1) % total)}
-            className="focus-cute rounded-full bg-marca px-3 py-1 text-sm font-bold text-white transition hover:brightness-110"
+            className="focus-cute rounded-full bg-marca px-3 py-1 text-sm font-bold text-white transition hover:brightness-110 dark:bg-marcaSoft"
           >
             Siguiente ›
           </button>

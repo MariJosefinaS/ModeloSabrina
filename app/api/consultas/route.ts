@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listConsultas, createConsulta } from "@/lib/store";
+import { listConsultasPublicas, createConsulta } from "@/lib/store";
 import { notifyNewConsulta, sendAcuseRecibo } from "@/lib/email";
-import { TemaConsulta } from "@/lib/types";
+import { TemaConsulta, Visibilidad } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +10,11 @@ const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 export async function GET() {
   try {
-    const consultas = await listConsultas();
+    // Este endpoint es PÚBLICO: devuelve sólo los comentarios públicos y sin
+    // el email de quien escribió. Las consultas privadas no salen de acá.
+    const consultas = (await listConsultasPublicas()).map(
+      ({ email, ...resto }) => resto
+    );
     return NextResponse.json({ ok: true, consultas });
   } catch {
     return NextResponse.json(
@@ -30,6 +34,9 @@ export async function POST(req: NextRequest) {
   const mensaje = String(body.mensaje ?? "").trim();
   const email = body.email ? String(body.email).trim() : null;
   const tema: TemaConsulta = TEMAS_VALIDOS.includes(body.tema) ? body.tema : "otro";
+  // Ante cualquier valor raro se cae del lado privado: publicar por error lo
+  // que alguien quiso mantener reservado no tiene vuelta atrás.
+  const visibilidad: Visibilidad = body.visibilidad === "publico" ? "publico" : "privado";
 
   if (nombre.length < 2) {
     return NextResponse.json({ ok: false, error: "Contanos tu nombre 🙂" }, { status: 400 });
@@ -40,9 +47,15 @@ export async function POST(req: NextRequest) {
   if (email && !EMAIL_RE.test(email)) {
     return NextResponse.json({ ok: false, error: "Ese email no parece válido" }, { status: 400 });
   }
+  if (visibilidad === "privado" && !email) {
+    return NextResponse.json(
+      { ok: false, error: "Para una consulta privada necesitamos tu email: es por donde te respondemos" },
+      { status: 400 }
+    );
+  }
 
   try {
-    const consulta = await createConsulta({ nombre, email, tema, mensaje });
+    const consulta = await createConsulta({ nombre, email, tema, mensaje, visibilidad });
     // Disparamos los dos mails en paralelo. Si falla el envío, igual
     // guardamos la consulta (no bloqueamos al paciente).
     const [avisoRes, acuseRes] = await Promise.allSettled([

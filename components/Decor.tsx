@@ -55,19 +55,20 @@ const DOTS = [
 export default function Decor() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
-      {/* Aurora: blobs de color que respiran */}
-      <div className="anim-blob absolute -left-24 -top-24 h-96 w-96 rounded-full bg-skysoft/60 blur-3xl" style={{ animationDelay: "0s" }} />
-      <div className="anim-blob absolute -right-24 top-10 h-96 w-96 rounded-full bg-sky/35 blur-3xl" style={{ animationDelay: "-7s" }} />
-      <div className="anim-blob absolute bottom-0 left-1/3 h-[28rem] w-[28rem] rounded-full bg-[#E4F2FF]/70 blur-3xl" style={{ animationDelay: "-13s" }} />
+      {/* Aurora: blobs de color que respiran. De noche bajan a azules
+          profundos, si no encandilan sobre el fondo oscuro. */}
+      <div className="anim-blob absolute -left-24 -top-24 h-96 w-96 rounded-full bg-skysoft/60 blur-3xl dark:bg-marca/25" style={{ animationDelay: "0s" }} />
+      <div className="anim-blob absolute -right-24 top-10 h-96 w-96 rounded-full bg-sky/35 blur-3xl dark:bg-panelAlt/50" style={{ animationDelay: "-7s" }} />
+      <div className="anim-blob absolute bottom-0 left-1/3 h-[28rem] w-[28rem] rounded-full bg-[#E4F2FF]/70 blur-3xl dark:bg-marca/20" style={{ animationDelay: "-13s" }} />
 
-      {/* Nubes que cruzan */}
-      <div className="anim-drift absolute top-[8%] opacity-80" style={{ animationDuration: "48s" }}>
+      {/* Nubes que cruzan. En noche quedan apenas insinuadas. */}
+      <div className="anim-drift absolute top-[8%] opacity-80 dark:opacity-[0.07]" style={{ animationDuration: "48s" }}>
         <Cloud className="w-28" />
       </div>
-      <div className="anim-drift absolute top-[30%] opacity-70" style={{ animationDuration: "72s", animationDelay: "-20s" }}>
+      <div className="anim-drift absolute top-[30%] opacity-70 dark:opacity-[0.06]" style={{ animationDuration: "72s", animationDelay: "-20s" }}>
         <Cloud className="w-40" />
       </div>
-      <div className="anim-drift absolute top-[66%] opacity-60" style={{ animationDuration: "90s", animationDelay: "-45s" }}>
+      <div className="anim-drift absolute top-[66%] opacity-60 dark:opacity-[0.05]" style={{ animationDuration: "90s", animationDelay: "-45s" }}>
         <Cloud className="w-24" />
       </div>
 
